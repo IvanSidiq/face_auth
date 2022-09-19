@@ -2,14 +2,12 @@ import 'package:camera/camera.dart';
 import 'dart:ui';
 
 class CameraService {
-  CameraController? _cameraController;
-  CameraController? get cameraController => _cameraController;
+  CameraController? cameraController;
 
-  String? _imagePath;
-  String? get imagePath => _imagePath;
+  String? imagePath;
 
   Future<void> initialize() async {
-    if (_cameraController != null) return;
+    if (cameraController != null) return;
     CameraDescription cameraDescription = await _getCameraDescription();
     await _setupCameraController(cameraDescription: cameraDescription);
   }
@@ -22,31 +20,29 @@ class CameraService {
   Future<void> _setupCameraController({
     required CameraDescription cameraDescription,
   }) async {
-    _cameraController = CameraController(
-      cameraDescription,
-      ResolutionPreset.low,
-    );
-    await _cameraController!.initialize();
+    cameraController =
+        CameraController(cameraDescription, ResolutionPreset.medium);
+    await cameraController!.initialize();
   }
 
   Future<XFile?> takePicture() async {
-    if (_cameraController == null) return null;
-    XFile? filePath = await _cameraController?.takePicture();
-    _imagePath = filePath?.path;
+    if (cameraController == null) return null;
+    XFile? filePath = await cameraController?.takePicture();
+    imagePath = filePath?.path;
     return filePath;
   }
 
   Size getImageSize() {
-    if (_cameraController == null) return Size.zero;
-    if (_cameraController!.value.previewSize == null) return Size.zero;
+    if (cameraController == null) return Size.zero;
+    if (cameraController!.value.previewSize == null) return Size.zero;
     return Size(
-      _cameraController!.value.previewSize!.width,
-      _cameraController!.value.previewSize!.height,
+      cameraController!.value.previewSize!.width,
+      cameraController!.value.previewSize!.height,
     );
   }
 
   dispose() async {
-    await _cameraController?.dispose();
-    _cameraController = null;
+    await cameraController?.dispose();
+    cameraController = null;
   }
 }

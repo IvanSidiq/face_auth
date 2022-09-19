@@ -1,4 +1,8 @@
+import 'dart:typed_data';
+
 import 'package:google_mlkit_face_detection/google_mlkit_face_detection.dart';
+
+import 'package:image/image.dart' as img;
 
 class MLService {
   late FaceDetector _faceDetector;
@@ -29,5 +33,23 @@ class MLService {
     ];
   }
 
-  dispose() {}
+  Float32List imageToByteListFloat32(img.Image image) {
+    var convertedBytes = Float32List(1 * 112 * 112 * 3);
+    var buffer = Float32List.view(convertedBytes.buffer);
+    int pixelIndex = 0;
+
+    for (var i = 0; i < 112; i++) {
+      for (var j = 0; j < 112; j++) {
+        var pixel = image.getPixel(j, i);
+        buffer[pixelIndex++] = (img.getRed(pixel) - 128) / 128;
+        buffer[pixelIndex++] = (img.getGreen(pixel) - 128) / 128;
+        buffer[pixelIndex++] = (img.getBlue(pixel) - 128) / 128;
+      }
+    }
+    return convertedBytes.buffer.asFloat32List();
+  }
+
+  Future<void> dispose() async {
+    await _faceDetector.close();
+  }
 }

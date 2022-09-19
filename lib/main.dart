@@ -1,3 +1,4 @@
+import 'package:face_auth/pages/camera_page.dart';
 import 'package:flutter/material.dart';
 import 'package:face_auth/pages/home_page.dart';
 import 'package:face_auth/locator.dart';
@@ -12,12 +13,8 @@ class FaceAuthApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-        visualDensity: VisualDensity.adaptivePlatformDensity,
-      ),
-      home: const HomePage(),
+    return const MaterialApp(
+      home: HomePage(),
     );
   }
 }
