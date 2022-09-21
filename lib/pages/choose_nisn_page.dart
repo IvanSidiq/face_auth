@@ -31,24 +31,68 @@ class ChooseNisnPage extends StatelessWidget {
                 fit: BoxFit.contain,
               ),
             ]).p16(),
-            ListView.builder(
-                    scrollDirection: Axis.vertical,
-                    itemCount: 10,
-                    itemBuilder: (context, index) {
-                      return VStack([
+            VStack([
+              Gap(12),
+              'Menampilkan 10 hasil pencarian NIS'
+                  .text
+                  .center
+                  .color(const Color(0xFF45464F))
+                  .size(11)
+                  .semiBold
+                  .make()
+                  .pOnly(left: 8),
+              Gap(8),
+              ListView.builder(
+                  scrollDirection: Axis.vertical,
+                  physics: const NeverScrollableScrollPhysics(),
+                  shrinkWrap: true,
+                  itemCount: 10,
+                  itemBuilder: (context, index) {
+                    return HStack([
+                      'A'
+                          .text
+                          .makeCentered()
+                          .box
+                          .width(32)
+                          .height(32)
+                          .color(Color(0xFFDAE1FF))
+                          .withRounded(value: 32)
+                          .make(),
+                      Gap(12),
+                      VStack([
                         'Bondan Prakoso'.text.make(),
                         const Gap(8),
                         '123456'.text.make()
-                      ])
-                          .box
-                          .p12
-                          .withRounded(value: 8)
-                          .color(Colors.white)
-                          .border(color: Colors.black12)
-                          .make()
-                          .pOnly(top: 4, bottom: 4);
-                    })
-                .w(Get.width)
+                      ]).expand(),
+                      index % 2 == 0
+                          ? 'Pilih'
+                              .text
+                              .white
+                              .makeCentered()
+                              .pSymmetric(v: 4, h: 10)
+                              .box
+                              .color(Color(0xFF2155CF))
+                              .roundedLg
+                              .make()
+                          : 'Sudah hadir'
+                              .text
+                              .color(Color(0xFF1B1B1F).withOpacity(0.52))
+                              .makeCentered()
+                              .pSymmetric(v: 4, h: 10)
+                              .box
+                              .color(Color(0xFF1B1B1F).withOpacity(0.12))
+                              .roundedLg
+                              .make(),
+                    ])
+                        .box
+                        .p12
+                        .withRounded(value: 12)
+                        .color(Colors.white)
+                        .make()
+                        .pOnly(top: 4, bottom: 4);
+                  }).w(Get.width)
+            ])
+                .scrollVertical(physics: const BouncingScrollPhysics())
                 .box
                 .withRounded(value: 16)
                 .p8
@@ -56,16 +100,16 @@ class ChooseNisnPage extends StatelessWidget {
                 .make()
                 .px(8)
                 .expand(),
-            const KeyboardWidget()
-                .box
-                // .withShadow([
-                //   const BoxShadow(
-                //       offset: Offset(0, -4),
-                //       blurRadius: 16,
-                //       spreadRadius: 0,
-                //       color: Color(0x1E000000))
-                // ])
-                .make(),
+            const KeyboardWidget(),
+            // .box
+            // .withShadow([
+            //   const BoxShadow(
+            //       offset: Offset(0, -4),
+            //       blurRadius: 16,
+            //       spreadRadius: 0,
+            //       color: Color(0x1E000000))
+            // ])
+            // .make(),
           ]),
           // DraggableScrollableSheet(
           //   maxChildSize: 0.55,
