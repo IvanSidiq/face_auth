@@ -6,14 +6,12 @@ import 'dart:typed_data';
 import 'package:bloc/bloc.dart';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
 import 'package:google_mlkit_face_detection/google_mlkit_face_detection.dart';
 import 'package:image/image.dart' as img;
 import 'package:path_provider/path_provider.dart';
 import 'package:tflite_flutter/tflite_flutter.dart';
 
-import '../../db/databse_helper.dart';
-import '../../locator.dart';
-import '../../models/user.model.dart';
 import '../../services/camera_service.dart';
 import '../../services/image_service.dart';
 import '../../services/ml_service.dart';
@@ -23,9 +21,10 @@ part 'camera_state.dart';
 class CameraCubit extends Cubit<CameraState> {
   CameraCubit() : super(CameraInitial());
 
-  final ImageService imageService = locator<ImageService>();
-  final CameraService cameraService = locator<CameraService>();
-  final MLService mlService = locator<MLService>();
+  final ImageService imageService = GetIt.I<ImageService>();
+  final CameraService cameraService = GetIt.I<CameraService>();
+  final MLService mlService = GetIt.I<MLService>();
+
   Interpreter? interpreter;
 
   late FaceDetector faceDetector;

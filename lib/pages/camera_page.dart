@@ -6,6 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:velocity_x/velocity_x.dart';
 
+import '../utils/colors.dart';
 import '../widgets/FacePainter.dart';
 import 'cubit/camera_cubit.dart';
 
@@ -129,7 +130,7 @@ class _CameraPage extends HookWidget {
                                             })
                                         .box
                                         .p16
-                                        .color(Colors.white)
+                                        .color(CustomColor.surface)
                                         .rounded
                                         .make(),
                                   );

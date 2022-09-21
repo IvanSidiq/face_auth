@@ -1,3 +1,5 @@
+import 'package:face_auth/utils/colors.dart';
+import 'package:face_auth/utils/customs/custom_text_style.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:get/get.dart';
@@ -11,7 +13,7 @@ class ChooseNisnPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFFEFBFF),
+      backgroundColor: CustomColor.surface,
       body: SafeArea(
         child: ZStack([
           VStack([
@@ -19,6 +21,7 @@ class ChooseNisnPage extends StatelessWidget {
               Gap(24), //TODO logo sekolah
               'Absensi SMA N 1 Surakarta'
                   .text
+                  .textStyle(CustomTextStyle.titleMedium)
                   .center
                   .size(16)
                   .semiBold
@@ -36,7 +39,8 @@ class ChooseNisnPage extends StatelessWidget {
               'Menampilkan 10 hasil pencarian NIS'
                   .text
                   .center
-                  .color(const Color(0xFF45464F))
+                  .textStyle(CustomTextStyle.labelSmall)
+                  .color(CustomColor.onSurfaceVariant)
                   .size(11)
                   .semiBold
                   .make()
@@ -48,46 +52,66 @@ class ChooseNisnPage extends StatelessWidget {
                   shrinkWrap: true,
                   itemCount: 10,
                   itemBuilder: (context, index) {
+                    final isChoosable = index % 2 == 0;
                     return HStack([
                       'A'
                           .text
+                          .color(CustomColor.primary
+                              .withOpacity(isChoosable ? 1 : 0.36))
+                          .semiBold
+                          .size(16)
                           .makeCentered()
                           .box
                           .width(32)
                           .height(32)
-                          .color(Color(0xFFDAE1FF))
+                          .color(CustomColor.primaryContainer
+                              .withOpacity(isChoosable ? 1 : 0.36))
                           .withRounded(value: 32)
                           .make(),
                       Gap(12),
                       VStack([
-                        'Bondan Prakoso'.text.make(),
+                        'Bondan Prakoso'
+                            .text
+                            .textStyle(CustomTextStyle.bodyMedium)
+                            .color(CustomColor.onSurface
+                                .withOpacity(isChoosable ? 1 : 0.36))
+                            .make(),
                         const Gap(8),
-                        '123456'.text.make()
+                        '123456'
+                            .text
+                            .textStyle(CustomTextStyle.labelMedium)
+                            .color(CustomColor.onSurfaceVariant
+                                .withOpacity(isChoosable ? 0.6 : 0.36))
+                            .make()
                       ]).expand(),
-                      index % 2 == 0
+                      isChoosable
                           ? 'Pilih'
                               .text
-                              .white
+                              .color(CustomColor.surface)
+                              .textStyle(CustomTextStyle.labelSmall)
                               .makeCentered()
                               .pSymmetric(v: 4, h: 10)
                               .box
-                              .color(Color(0xFF2155CF))
+                              .color(CustomColor.primary
+                                  .withOpacity(isChoosable ? 1 : 0.36))
                               .roundedLg
                               .make()
                           : 'Sudah hadir'
                               .text
-                              .color(Color(0xFF1B1B1F).withOpacity(0.52))
+                              .textStyle(CustomTextStyle.labelSmall)
+                              .color(CustomColor.onSurface
+                                  .withOpacity(isChoosable ? 0.52 : 0.36))
                               .makeCentered()
                               .pSymmetric(v: 4, h: 10)
                               .box
-                              .color(Color(0xFF1B1B1F).withOpacity(0.12))
+                              .color(CustomColor.onSurface.withOpacity(0.12))
                               .roundedLg
                               .make(),
                     ])
                         .box
                         .p12
                         .withRounded(value: 12)
-                        .color(Colors.white)
+                        .color(CustomColor.surface)
                         .make()
                         .pOnly(top: 4, bottom: 4);
                   }).w(Get.width)
@@ -96,7 +120,7 @@ class ChooseNisnPage extends StatelessWidget {
                 .box
                 .withRounded(value: 16)
                 .p8
-                .color(const Color(0xFF2155CF).withOpacity(0.11))
+                .color(CustomColor.surface3)
                 .make()
                 .px(8)
                 .expand(),

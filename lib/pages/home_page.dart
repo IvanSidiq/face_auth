@@ -1,10 +1,6 @@
-import 'dart:io';
-
-import 'package:face_auth/pages/choose_nisn_page.dart';
+import 'package:face_auth/services/navigation_service.dart';
 import 'package:flutter/material.dart';
-import 'package:face_auth/pages/camera_page.dart';
-
-import 'keyboard_widget.dart';
+import 'package:get_it/get_it.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -51,23 +47,13 @@ class _HomePageState extends State<HomePage> {
               // ),
               ElevatedButton(
                 onPressed: () async {
-                  var temp = await Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const CameraPage(),
-                    ),
-                  );
+                  GetIt.I<NavigationServiceMain>().pushNamed('/camera');
                 },
                 child: const Text('Take a picture'),
               ),
               ElevatedButton(
-                onPressed: () async {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const ChooseNisnPage(),
-                    ),
-                  );
+                onPressed: () {
+                  GetIt.I<NavigationServiceMain>().pushNamed('/choose_nisn');
                 },
                 child: const Text('Keyboard'),
               )

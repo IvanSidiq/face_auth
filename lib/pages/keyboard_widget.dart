@@ -1,3 +1,4 @@
+import 'package:face_auth/utils/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -56,7 +57,12 @@ class _KeyboardWidget extends HookWidget {
           if (cubit.keyController != '') {
             return cubit.keyController.text.center.size(28).make();
           } else {
-            return 'NISN'.text.color(Colors.black26).center.size(28).make();
+            return 'NISN'
+                .text
+                .color(CustomColor.onSurfaceVariant.withOpacity(0.56))
+                .center
+                .size(28)
+                .make();
           }
         },
       ).w(Get.width),
@@ -209,6 +215,6 @@ class _KeyboardWidget extends HookWidget {
         crossAlignment: CrossAxisAlignment.center,
       ),
       const Gap(30),
-    ]).box.color(Colors.white).topRounded(value: 16).make();
+    ]).box.color(CustomColor.surface).topRounded(value: 16).make();
   }
 }
