@@ -5,7 +5,7 @@ part 'keyboard_state.dart';
 
 class KeyboardCubit extends Cubit<KeyboardState> {
   KeyboardCubit() : super(KeyboardInitial());
-  String keyController = '123';
+  String keyController = '';
 
   void addNum(String num) {
     emit(AddNum(num));

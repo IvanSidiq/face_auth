@@ -1,9 +1,10 @@
 import 'dart:io';
 
+import 'package:face_auth/pages/choose_nisn_page.dart';
 import 'package:flutter/material.dart';
 import 'package:face_auth/pages/camera_page.dart';
 
-import 'keyboard_page.dart';
+import 'keyboard_widget.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -64,7 +65,7 @@ class _HomePageState extends State<HomePage> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => const KeyboardPage(),
+                      builder: (context) => const ChooseNisnPage(),
                     ),
                   );
                 },
