@@ -56,6 +56,12 @@ class _HomePageState extends State<HomePage> {
                   GetIt.I<NavigationServiceMain>().pushNamed('/choose_nisn');
                 },
                 child: const Text('Keyboard'),
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  GetIt.I<NavigationServiceMain>().pushNamed('/login');
+                },
+                child: const Text('login'),
               )
             ],
           ),

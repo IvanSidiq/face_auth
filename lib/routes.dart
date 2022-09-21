@@ -1,10 +1,11 @@
 import 'package:face_auth/pages/camera_page.dart';
 import 'package:face_auth/pages/choose_nisn_page.dart';
-import 'package:face_auth/pages/home_page.dart';
 import 'package:fluro/fluro.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:velocity_x/velocity_x.dart';
+
+import 'pages/login/login_page.dart';
 
 void configureRoutes() {
   final router = GetIt.I<FluroRouter>();
@@ -29,6 +30,15 @@ void configureRoutes() {
     handler: Handler(
       handlerFunc: (BuildContext? context, Map<String, List<String>> params) =>
           const ChooseNisnPage(),
+    ),
+    transitionType: TransitionType.none,
+  );
+
+  router.define(
+    '/login',
+    handler: Handler(
+      handlerFunc: (BuildContext? context, Map<String, List<String>> params) =>
+          const LoginPage(),
     ),
     transitionType: TransitionType.none,
   );

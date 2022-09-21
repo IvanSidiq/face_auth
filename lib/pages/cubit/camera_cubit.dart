@@ -94,9 +94,10 @@ class CameraCubit extends Cubit<CameraState> {
   }
 
   Future<void> dispose() async {
-    await cameraService.dispose();
-    await mlService.dispose();
     timer!.cancel();
+    print('1');
+    await cameraService.dispose();
+    print('2');
   }
 
   Future<void> processImage() async {

@@ -36,6 +36,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.1.0"
+  boxicons:
+    dependency: "direct main"
+    description:
+      name: boxicons
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.1.3"
   camera:
     dependency: "direct main"
     description:
