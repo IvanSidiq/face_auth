@@ -18,7 +18,7 @@ class ChooseNisnPage extends StatelessWidget {
         child: ZStack([
           VStack([
             HStack([
-              Gap(24), //TODO logo sekolah
+              const Gap(24), //TODO logo sekolah
               'Absensi SMA N 1 Surakarta'
                   .text
                   .textStyle(CustomTextStyle.titleMedium)
@@ -35,7 +35,7 @@ class ChooseNisnPage extends StatelessWidget {
               ),
             ]).p16(),
             VStack([
-              Gap(12),
+              const Gap(12),
               'Menampilkan 10 hasil pencarian NIS'
                   .text
                   .center
@@ -45,7 +45,7 @@ class ChooseNisnPage extends StatelessWidget {
                   .semiBold
                   .make()
                   .pOnly(left: 8),
-              Gap(8),
+              const Gap(8),
               ListView.builder(
                   scrollDirection: Axis.vertical,
                   physics: const NeverScrollableScrollPhysics(),
@@ -68,7 +68,7 @@ class ChooseNisnPage extends StatelessWidget {
                               .withOpacity(isChoosable ? 1 : 0.36))
                           .withRounded(value: 32)
                           .make(),
-                      Gap(12),
+                      const Gap(12),
                       VStack([
                         'Bondan Prakoso'
                             .text
