@@ -7,7 +7,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:velocity_x/velocity_x.dart';
 
 import '../utils/colors.dart';
-import '../widgets/FacePainter.dart';
+import '../widgets/face_painter.dart';
 import 'cubit/camera_cubit.dart';
 
 class CameraPage extends StatelessWidget {

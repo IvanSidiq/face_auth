@@ -62,7 +62,7 @@ class _HomePageState extends State<HomePage> {
                   GetIt.I<NavigationServiceMain>().pushNamed('/login');
                 },
                 child: const Text('login'),
-              )
+              ),
             ],
           ),
         ),

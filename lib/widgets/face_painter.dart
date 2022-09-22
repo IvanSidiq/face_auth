@@ -54,5 +54,5 @@ RRect _scaleRect(
       rect.top.toDouble() * scaleY,
       widgetSize.width - rect.right.toDouble() * scaleX,
       rect.bottom.toDouble() * scaleY,
-      Radius.circular(10));
+      const Radius.circular(10));
 }

@@ -12,3 +12,5 @@ class AddNum extends KeyboardState {
 }
 
 class ReduceNum extends KeyboardState {}
+
+class ClearAll extends KeyboardState {}

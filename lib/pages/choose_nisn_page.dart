@@ -34,89 +34,91 @@ class ChooseNisnPage extends StatelessWidget {
                 fit: BoxFit.contain,
               ),
             ]).p16(),
-            VStack([
-              const Gap(12),
-              'Menampilkan 10 hasil pencarian NIS'
-                  .text
-                  .center
-                  .textStyle(CustomTextStyle.labelSmall)
-                  .color(CustomColor.onSurfaceVariant)
-                  .size(11)
-                  .semiBold
-                  .make()
-                  .pOnly(left: 8),
-              const Gap(8),
-              ListView.builder(
-                  scrollDirection: Axis.vertical,
-                  physics: const NeverScrollableScrollPhysics(),
-                  shrinkWrap: true,
-                  itemCount: 10,
-                  itemBuilder: (context, index) {
-                    final isChoosable = index % 2 == 0;
-                    return HStack([
-                      'A'
-                          .text
-                          .color(CustomColor.primary
-                              .withOpacity(isChoosable ? 1 : 0.36))
-                          .semiBold
-                          .size(16)
-                          .makeCentered()
-                          .box
-                          .width(32)
-                          .height(32)
-                          .color(CustomColor.primaryContainer
-                              .withOpacity(isChoosable ? 1 : 0.36))
-                          .withRounded(value: 32)
-                          .make(),
-                      const Gap(12),
-                      VStack([
-                        'Bondan Prakoso'
+            ClipRRect(
+              borderRadius: BorderRadius.circular(12),
+              child: VStack([
+                const Gap(12),
+                'Menampilkan 10 hasil pencarian NIS'
+                    .text
+                    .center
+                    .textStyle(CustomTextStyle.labelSmall)
+                    .color(CustomColor.onSurfaceVariant)
+                    .size(11)
+                    .semiBold
+                    .make()
+                    .pOnly(left: 8),
+                const Gap(8),
+                ListView.builder(
+                    scrollDirection: Axis.vertical,
+                    physics: const NeverScrollableScrollPhysics(),
+                    shrinkWrap: true,
+                    itemCount: 10,
+                    itemBuilder: (context, index) {
+                      final isChoosable = index % 2 == 0;
+                      return HStack([
+                        'A'
                             .text
-                            .textStyle(CustomTextStyle.bodyMedium)
-                            .color(CustomColor.onSurface
+                            .color(CustomColor.primary
                                 .withOpacity(isChoosable ? 1 : 0.36))
+                            .semiBold
+                            .size(16)
+                            .makeCentered()
+                            .box
+                            .width(32)
+                            .height(32)
+                            .color(CustomColor.primaryContainer
+                                .withOpacity(isChoosable ? 1 : 0.36))
+                            .withRounded(value: 32)
                             .make(),
-                        const Gap(8),
-                        '123456'
-                            .text
-                            .textStyle(CustomTextStyle.labelMedium)
-                            .color(CustomColor.onSurfaceVariant
-                                .withOpacity(isChoosable ? 0.6 : 0.36))
-                            .make()
-                      ]).expand(),
-                      isChoosable
-                          ? 'Pilih'
+                        const Gap(12),
+                        VStack([
+                          'Bondan Prakoso'
                               .text
-                              .color(CustomColor.surface)
-                              .textStyle(CustomTextStyle.labelSmall)
-                              .makeCentered()
-                              .pSymmetric(v: 4, h: 10)
-                              .box
-                              .color(CustomColor.primary
-                                  .withOpacity(isChoosable ? 1 : 0.36))
-                              .roundedLg
-                              .make()
-                          : 'Sudah hadir'
-                              .text
-                              .textStyle(CustomTextStyle.labelSmall)
+                              .textStyle(CustomTextStyle.bodyMedium)
                               .color(CustomColor.onSurface
-                                  .withOpacity(isChoosable ? 0.52 : 0.36))
-                              .makeCentered()
-                              .pSymmetric(v: 4, h: 10)
-                              .box
-                              .color(CustomColor.onSurface.withOpacity(0.12))
-                              .roundedLg
+                                  .withOpacity(isChoosable ? 1 : 0.36))
                               .make(),
-                    ])
-                        .box
-                        .p12
-                        .withRounded(value: 12)
-                        .color(CustomColor.surface)
-                        .make()
-                        .pOnly(top: 4, bottom: 4);
-                  }).w(Get.width)
-            ])
-                .scrollVertical(physics: const BouncingScrollPhysics())
+                          const Gap(8),
+                          '123456'
+                              .text
+                              .textStyle(CustomTextStyle.labelMedium)
+                              .color(CustomColor.onSurfaceVariant
+                                  .withOpacity(isChoosable ? 0.6 : 0.36))
+                              .make()
+                        ]).expand(),
+                        isChoosable
+                            ? 'Pilih'
+                                .text
+                                .color(CustomColor.surface)
+                                .textStyle(CustomTextStyle.labelSmall)
+                                .makeCentered()
+                                .pSymmetric(v: 4, h: 10)
+                                .box
+                                .color(CustomColor.primary
+                                    .withOpacity(isChoosable ? 1 : 0.36))
+                                .roundedLg
+                                .make()
+                            : 'Sudah hadir'
+                                .text
+                                .textStyle(CustomTextStyle.labelSmall)
+                                .color(CustomColor.onSurface
+                                    .withOpacity(isChoosable ? 0.52 : 0.36))
+                                .makeCentered()
+                                .pSymmetric(v: 4, h: 10)
+                                .box
+                                .color(CustomColor.onSurface.withOpacity(0.12))
+                                .roundedLg
+                                .make(),
+                      ])
+                          .box
+                          .p12
+                          .withRounded(value: 12)
+                          .color(CustomColor.surface)
+                          .make()
+                          .pOnly(top: 4, bottom: 4);
+                    }).w(Get.width)
+              ]).scrollVertical(physics: const BouncingScrollPhysics()),
+            )
                 .box
                 .withRounded(value: 16)
                 .p8

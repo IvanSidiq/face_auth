@@ -1,4 +1,5 @@
 import 'package:face_auth/utils/colors.dart';
+import 'package:face_auth/utils/customs/custom_text_style.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -52,14 +53,18 @@ class _KeyboardWidget extends HookWidget {
                   .substring(0, cubit.keyController.length - 1);
             }
           }
+          if (state is ClearAll) {
+            cubit.keyController = '';
+          }
         },
         builder: (context, state) {
           if (cubit.keyController != '') {
-            return cubit.keyController.text.center.size(28).make();
+            return cubit.keyController.text.center.size(28).make().px24();
           } else {
-            return 'NISN'
+            return 'Masukkan NISN'
                 .text
-                .color(CustomColor.onSurfaceVariant.withOpacity(0.56))
+                .textStyle(CustomTextStyle.headlineMedium)
+                .color(CustomColor.onSurfaceVariant.withOpacity(0.38))
                 .center
                 .size(28)
                 .make();
@@ -70,150 +75,155 @@ class _KeyboardWidget extends HookWidget {
       const Divider(
         thickness: 1,
         color: Colors.black12,
-      ).px(16),
+      ).px(24),
       const Gap(20),
       VStack(
         [
           HStack([
-            '1'
-                .text
-                .size(24)
-                .makeCentered()
-                .box
-                .height(52)
-                .color(Colors.transparent)
-                .make()
-                .onTap(() {
-              cubit.addNum('1');
-            }).expand(),
-            '2'
-                .text
-                .size(24)
-                .makeCentered()
-                .box
-                .height(52)
-                .color(Colors.transparent)
-                .make()
-                .onTap(() {
-              cubit.addNum('2');
-            }).expand(),
-            '3'
-                .text
-                .size(24)
-                .makeCentered()
-                .box
-                .height(52)
-                .color(Colors.transparent)
-                .make()
-                .onTap(() {
-              cubit.addNum('3');
-            }).expand()
+            Material(
+              child: InkWell(
+                splashColor: CustomColor.onSurface.withOpacity(0.08),
+                highlightColor: Colors.transparent,
+                borderRadius: BorderRadius.circular(50),
+                onTap: () {
+                  cubit.addNum('1');
+                },
+                child: '1'.text.size(24).makeCentered().box.height(62).make(),
+              ),
+            ).expand(),
+            Material(
+              child: InkWell(
+                splashColor: CustomColor.onSurface.withOpacity(0.08),
+                highlightColor: Colors.transparent,
+                borderRadius: BorderRadius.circular(50),
+                onTap: () {
+                  cubit.addNum('2');
+                },
+                child: '2'.text.size(24).makeCentered().box.height(62).make(),
+              ),
+            ).expand(),
+            Material(
+              child: InkWell(
+                splashColor: CustomColor.onSurface.withOpacity(0.08),
+                highlightColor: Colors.transparent,
+                borderRadius: BorderRadius.circular(50),
+                onTap: () {
+                  cubit.addNum('3');
+                },
+                child: '3'.text.size(24).makeCentered().box.height(62).make(),
+              ),
+            ).expand(),
           ]).w(Get.width),
-          const Gap(20),
           HStack([
-            '4'
-                .text
-                .size(24)
-                .makeCentered()
-                .box
-                .height(52)
-                .color(Colors.transparent)
-                .make()
-                .onTap(() {
-              cubit.addNum('4');
-            }).expand(),
-            '5'
-                .text
-                .size(24)
-                .makeCentered()
-                .box
-                .height(52)
-                .color(Colors.transparent)
-                .make()
-                .onTap(() {
-              cubit.addNum('5');
-            }).expand(),
-            '6'
-                .text
-                .size(24)
-                .makeCentered()
-                .box
-                .height(52)
-                .color(Colors.transparent)
-                .make()
-                .onTap(() {
-              cubit.addNum('6');
-            }).expand()
+            Material(
+              child: InkWell(
+                splashColor: CustomColor.onSurface.withOpacity(0.08),
+                highlightColor: Colors.transparent,
+                borderRadius: BorderRadius.circular(50),
+                onTap: () {
+                  cubit.addNum('4');
+                },
+                child: '4'.text.size(24).makeCentered().box.height(62).make(),
+              ),
+            ).expand(),
+            Material(
+              child: InkWell(
+                splashColor: CustomColor.onSurface.withOpacity(0.08),
+                highlightColor: Colors.transparent,
+                borderRadius: BorderRadius.circular(50),
+                onTap: () {
+                  cubit.addNum('5');
+                },
+                child: '5'.text.size(24).makeCentered().box.height(62).make(),
+              ),
+            ).expand(),
+            Material(
+              child: InkWell(
+                splashColor: CustomColor.onSurface.withOpacity(0.08),
+                highlightColor: Colors.transparent,
+                borderRadius: BorderRadius.circular(50),
+                onTap: () {
+                  cubit.addNum('6');
+                },
+                child: '6'.text.size(24).makeCentered().box.height(62).make(),
+              ),
+            ).expand(),
           ]).w(Get.width),
-          const Gap(20),
           HStack([
-            '7'
-                .text
-                .size(24)
-                .makeCentered()
-                .box
-                .height(52)
-                .color(Colors.transparent)
-                .make()
-                .onTap(() {
-              cubit.addNum('7');
-            }).expand(),
-            '8'
-                .text
-                .size(24)
-                .makeCentered()
-                .box
-                .height(52)
-                .color(Colors.transparent)
-                .make()
-                .onTap(() {
-              cubit.addNum('8');
-            }).expand(),
-            '9'
-                .text
-                .size(24)
-                .makeCentered()
-                .box
-                .height(52)
-                .color(Colors.transparent)
-                .make()
-                .onTap(() {
-              cubit.addNum('9');
-            }).expand()
+            Material(
+              child: InkWell(
+                splashColor: CustomColor.onSurface.withOpacity(0.08),
+                highlightColor: Colors.transparent,
+                borderRadius: BorderRadius.circular(50),
+                onTap: () {
+                  cubit.addNum('7');
+                },
+                child: '7'.text.size(24).makeCentered().box.height(62).make(),
+              ),
+            ).expand(),
+            Material(
+              child: InkWell(
+                splashColor: CustomColor.onSurface.withOpacity(0.08),
+                highlightColor: Colors.transparent,
+                borderRadius: BorderRadius.circular(50),
+                onTap: () {
+                  cubit.addNum('8');
+                },
+                child: '8'.text.size(24).makeCentered().box.height(62).make(),
+              ),
+            ).expand(),
+            Material(
+              child: InkWell(
+                splashColor: CustomColor.onSurface.withOpacity(0.08),
+                highlightColor: Colors.transparent,
+                borderRadius: BorderRadius.circular(50),
+                onTap: () {
+                  cubit.addNum('9');
+                },
+                child: '9'.text.size(24).makeCentered().box.height(62).make(),
+              ),
+            ).expand(),
           ]).w(Get.width),
-          const Gap(20),
           HStack([
-            ' '
-                .text
-                .size(24)
-                .makeCentered()
-                .box
-                .height(52)
-                .color(Colors.transparent)
-                .make()
-                .onTap(() {})
-                .expand(),
-            '0'
-                .text
-                .size(24)
-                .makeCentered()
-                .box
-                .height(52)
-                .color(Colors.transparent)
-                .make()
-                .onTap(() {
-              cubit.addNum('0');
-            }).expand(),
-            const Icon(
-              Icons.backspace_outlined,
-              size: 24,
-            ).box.height(52).color(Colors.transparent).make().onTap(() {
-              cubit.reduceNum();
-            }).expand()
+            InkWell(
+              splashColor: CustomColor.onSurface.withOpacity(0.08),
+              highlightColor: Colors.transparent,
+              borderRadius: BorderRadius.circular(50),
+              onTap: () {},
+              child: ' '.text.size(24).makeCentered().box.height(62).make(),
+            ).expand(),
+            Material(
+              child: InkWell(
+                splashColor: CustomColor.onSurface.withOpacity(0.08),
+                highlightColor: Colors.transparent,
+                borderRadius: BorderRadius.circular(50),
+                onTap: () {
+                  cubit.addNum('0');
+                },
+                child: '0'.text.size(24).makeCentered().box.height(62).make(),
+              ),
+            ).expand(),
+            Material(
+              child: InkWell(
+                splashColor: CustomColor.onSurface.withOpacity(0.08),
+                highlightColor: Colors.transparent,
+                borderRadius: BorderRadius.circular(50),
+                onTap: () {
+                  cubit.reduceNum();
+                },
+                onLongPress: () {
+                  cubit.clearAll();
+                },
+                child: const Icon(
+                  Icons.backspace_outlined,
+                  size: 24,
+                ).box.height(62).color(Colors.transparent).make(),
+              ),
+            ).expand(),
           ]).w(Get.width),
         ],
         crossAlignment: CrossAxisAlignment.center,
-      ),
+      ).px(16),
       const Gap(30),
     ]).box.color(CustomColor.surface).topRounded(value: 16).make();
   }

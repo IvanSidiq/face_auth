@@ -14,4 +14,8 @@ class KeyboardCubit extends Cubit<KeyboardState> {
   void reduceNum() {
     emit(ReduceNum());
   }
+
+  void clearAll() {
+    emit(ClearAll());
+  }
 }
