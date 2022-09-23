@@ -6,6 +6,7 @@ import 'package:get_it/get_it.dart';
 import 'package:velocity_x/velocity_x.dart';
 
 import 'pages/login/login_page.dart';
+import 'pages/scanner/scanner_screen.dart';
 
 void configureRoutes() {
   final router = GetIt.I<FluroRouter>();
@@ -39,6 +40,15 @@ void configureRoutes() {
     handler: Handler(
       handlerFunc: (BuildContext? context, Map<String, List<String>> params) =>
           const LoginPage(),
+    ),
+    transitionType: TransitionType.none,
+  );
+
+  router.define(
+    '/scanner',
+    handler: Handler(
+      handlerFunc: (BuildContext? context, Map<String, List<String>> params) =>
+          const ScannerScreen(),
     ),
     transitionType: TransitionType.none,
   );

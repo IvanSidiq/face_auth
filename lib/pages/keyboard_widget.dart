@@ -224,7 +224,6 @@ class _KeyboardWidget extends HookWidget {
         ],
         crossAlignment: CrossAxisAlignment.center,
       ).px(16),
-      const Gap(30),
     ]).box.color(CustomColor.surface).topRounded(value: 16).make();
   }
 }

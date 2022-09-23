@@ -1,8 +1,11 @@
+import 'package:face_auth/services/navigation_service.dart';
 import 'package:face_auth/utils/colors.dart';
 import 'package:face_auth/utils/customs/custom_text_style.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_boxicons/flutter_boxicons.dart';
 import 'package:gap/gap.dart';
 import 'package:get/get.dart';
+import 'package:get_it/get_it.dart';
 import 'package:velocity_x/velocity_x.dart';
 
 import 'keyboard_widget.dart';
@@ -127,6 +130,28 @@ class ChooseNisnPage extends StatelessWidget {
                 .px(8)
                 .expand(),
             const KeyboardWidget(),
+            HStack([
+              Icon(
+                Boxicons.bx_scan,
+                size: 24,
+                color: CustomColor.surface,
+              ),
+              Gap(12),
+              'Scan QR'
+                  .text
+                  .color(CustomColor.surface)
+                  .textStyle(CustomTextStyle.bodyMedium)
+                  .make(),
+            ])
+                .centered()
+                .box
+                .height(64)
+                .color(CustomColor.primary)
+                .width(Get.width)
+                .make()
+                .onTap(() {
+              GetIt.I<NavigationServiceMain>().pushNamed('/scanner');
+            }),
             // .box
             // .withShadow([
             //   const BoxShadow(
