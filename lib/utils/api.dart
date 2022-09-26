@@ -44,6 +44,7 @@ String kApiBorrowBook = '$kApiKebab/borrowers';
 String kApiSetting = '$kApiKebab/settings';
 
 //school
+String kApiSchoolProfileNogosari = '$kApiNogosari/schools/profile';
 String kApiSchoolProfile = '$kApiKebab/schools/profile';
 String kApiSchoolList = '$kApiNogosari/users/schools';
 String kApiSchoolRegistration = '$kApiNogosari/users/subscribe';

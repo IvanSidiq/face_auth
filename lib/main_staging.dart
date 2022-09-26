@@ -3,14 +3,16 @@ import 'package:face_auth/services/di_service.dart';
 import 'package:face_auth/services/navigation_service.dart';
 import 'package:fluro/fluro.dart';
 import 'package:flutter/material.dart';
-import 'package:face_auth/pages/home_page.dart';
 import 'package:flutter_flavor/flutter_flavor.dart';
 import 'package:get_it/get_it.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 
+import 'pages/nisn/choose_nisn_page.dart';
+
 void main() {
   DIService.initialize();
   configureRoutes();
+  WidgetsFlutterBinding.ensureInitialized();
 
   FlavorConfig(
     name: "STAGING",
@@ -55,7 +57,7 @@ class FaceAuthApp extends StatelessWidget {
         scaffoldBackgroundColor: Colors.black,
         fontFamily: 'Inter',
       ),
-      home: const HomePage(),
+      home: const ChooseNisnPage(),
     );
   }
 }

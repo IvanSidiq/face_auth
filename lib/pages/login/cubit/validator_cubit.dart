@@ -13,6 +13,10 @@ class ValidatorCubit extends Cubit<ValidatorState> {
   Color borderColor = CustomColor.primary;
   Color textColor = CustomColor.onSurfaceVariant;
 
+  bool isLoginable = false;
+  Color backgroundButtonColor = CustomColor.onSurface.withOpacity(0.12);
+  Color textButtonColor = CustomColor.onSurface.withOpacity(0.52);
+
   void obscureChange() {
     emit(ObstructChanged());
   }

@@ -1,5 +1,5 @@
 import 'package:face_auth/pages/camera_page.dart';
-import 'package:face_auth/pages/choose_nisn_page.dart';
+import 'package:face_auth/pages/nisn/choose_nisn_page.dart';
 import 'package:fluro/fluro.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';

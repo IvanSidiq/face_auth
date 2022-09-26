@@ -1,7 +1,11 @@
+import 'package:cookie_jar/cookie_jar.dart';
+import 'package:dio/dio.dart';
+import 'package:face_auth/services/user_service.dart';
 import 'package:fluro/fluro.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get_it/get_it.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
+import 'package:path_provider/path_provider.dart';
 
 import 'camera_service.dart';
 import 'image_service.dart';
@@ -24,12 +28,13 @@ class DIService {
         fileService: HttpFileService(),
       ),
     ));
+
     GetIt.I
         .registerSingleton<FlutterSecureStorage>(const FlutterSecureStorage());
   }
 
-  // static void initializeConfig(Dio dio) {
-  //   GetIt.I.registerSingleton<UserService>(UserService());
-  //   GetIt.I.registerSingleton<Dio>(dio);
-  // }
+  static void initializeConfig(Dio dio) {
+    GetIt.I.registerSingleton<UserService>(UserService());
+    GetIt.I.registerSingleton<Dio>(dio);
+  }
 }

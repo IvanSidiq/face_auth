@@ -14,7 +14,7 @@ class LoginCubit extends Cubit<LoginState> {
     emit(LoginLoading());
     final response = await _repo.loginUserPass(email, password);
 
-    if (response.statusCode == 200) {
+    if (response.statusCode == 201) {
       emit(LoginSuccess());
     } else {
       emit(LoginFailed());

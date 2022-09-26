@@ -20,11 +20,7 @@ class AuthRepository extends BaseRepository {
       GetIt.I<UserService>().setUser = user;
       GetIt.I<FlutterSecureStorage>()
           .write(key: '$faBpls-$faBplsUser', value: user.id);
-      GetIt.I<NavigationServiceMain>().pushReplacementNamed('/root', args: {
-        'showNewAlert': false,
-        'showSuccessRegistAlert': false,
-        'initPage': 0
-      });
+      GetIt.I<NavigationServiceMain>().pushReplacementNamed('/choose_nisn');
       return BaseResponse(
         statusCode: response.statusCode,
         data: user,

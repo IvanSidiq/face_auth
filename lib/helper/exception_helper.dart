@@ -57,7 +57,7 @@ class ExceptionHelper<T> {
             CustomToast.showToastError(
                 'Sesi anda telah berakhir mohon login kembali');
             GetIt.I<NavigationServiceMain>().pushRemoveUntil('/login');
-            GetIt.I<PersistCookieJar>().deleteAll();
+            // GetIt.I<PersistCookieJar>().deleteAll();
             GetIt.I<FlutterSecureStorage>().deleteAll();
 
             return BaseResponse(

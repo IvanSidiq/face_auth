@@ -1,4 +1,5 @@
 import 'package:boxicons/boxicons.dart';
+import 'package:face_auth/pages/login/cubit/login_cubit.dart';
 import 'package:face_auth/pages/login/cubit/validator_cubit.dart';
 import 'package:face_auth/utils/customs/custom_text_style.dart';
 import 'package:flutter/material.dart';
@@ -9,14 +10,25 @@ import 'package:get/get.dart';
 import 'package:velocity_x/velocity_x.dart';
 
 import '../../utils/colors.dart';
+import 'cubit/button_cubit.dart';
 
 class LoginPage extends StatelessWidget {
   const LoginPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => ValidatorCubit(),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (context) => ValidatorCubit(),
+        ),
+        BlocProvider(
+          create: (context) => LoginCubit(),
+        ),
+        BlocProvider(
+          create: (context) => ButtonCubit(),
+        ),
+      ],
       child: const _LoginPage(),
     );
   }
@@ -28,129 +40,220 @@ class _LoginPage extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final vCubit = context.read<ValidatorCubit>();
+    final bCubit = context.read<ButtonCubit>();
+    final cubit = context.read<LoginCubit>();
 
     final emailC = useTextEditingController();
     final passwordC = useTextEditingController();
 
     return Scaffold(
-      body: VStack(
-        [
-          const VStack([]).expand(),
-          VStack([
-            'Selamat Datang'
-                .text
-                .textStyle(CustomTextStyle.titleLarge)
-                .makeCentered()
-                .w(Get.width),
-            const Gap(12),
-            'Masukkan email dan kata sandi untuk melanjutkan'
-                .text
-                .textStyle(CustomTextStyle.bodyMedium)
-                .makeCentered()
-                .w(Get.width),
-            const Gap(32),
-            BlocBuilder<ValidatorCubit, ValidatorState>(
-              builder: (context, state) {
-                return TextField(
-                  controller: emailC,
-                  keyboardType: TextInputType.emailAddress,
-                  onChanged: (value) {
-                    vCubit.showEmailNotValid = false;
-                    vCubit.borderColor = CustomColor.primary;
-                    vCubit.textColor = value.isEmptyOrNull
-                        ? CustomColor.onSecondaryContainer
-                        : CustomColor.primary;
+      body: SafeArea(
+        child: VStack(
+          [
+            VStack([
+              const Gap(52),
+              Image.asset(
+                'assets/icons/icon.png',
+                width: 48,
+                height: 48,
+                fit: BoxFit.contain,
+              ),
+              const Gap(44),
+              'Selamat Datang'
+                  .text
+                  .textStyle(CustomTextStyle.titleLarge)
+                  .make(),
+              const Gap(12),
+              'Masukkan email dan kata sandi untuk melanjutkan'
+                  .text
+                  .textStyle(CustomTextStyle.bodyMedium)
+                  .make(),
+              const Gap(32),
+              BlocBuilder<LoginCubit, LoginState>(
+                builder: (context, state) {
+                  if (state is LoginFailed) {
+                    return HStack([
+                      const Gap(2),
+                      Icon(
+                        Icons.error_outline,
+                        color: CustomColor.error,
+                        size: 20,
+                      ),
+                      Expanded(
+                        child: 'Email atau kata sandi yang Anda masukkan salah.'
+                            .text
+                            .color(CustomColor.error)
+                            .textStyle(CustomTextStyle.bodyMedium)
+                            .make()
+                            .pOnly(top: 4, left: 12),
+                      ),
+                    ]).pOnly(bottom: 8);
+                  }
+                  return const Gap(8);
+                },
+              ),
+              BlocBuilder<ValidatorCubit, ValidatorState>(
+                builder: (context, state) {
+                  return TextField(
+                    controller: emailC,
+                    keyboardType: TextInputType.emailAddress,
+                    onChanged: (value) {
+                      vCubit.showEmailNotValid = false;
+                      vCubit.borderColor = CustomColor.primary;
+                      vCubit.textColor = value.isEmptyOrNull
+                          ? CustomColor.onSecondaryContainer
+                          : CustomColor.primary;
 
-                    vCubit.validateChangeState();
-                  },
-                  decoration: InputDecoration(
-                      focusedBorder: OutlineInputBorder(
-                        borderSide:
-                            BorderSide(width: 1.5, color: vCubit.borderColor),
-                        borderRadius: BorderRadius.circular(8),
-                      ),
+                      vCubit.validateChangeState();
+
+                      if (emailC.text.isNotEmptyAndNotNull &&
+                          passwordC.text.isNotEmptyAndNotNull) {
+                        bCubit.changeButtonState(true);
+                      } else {
+                        bCubit.changeButtonState(false);
+                      }
+                    },
+                    decoration: InputDecoration(
+                        focusedBorder: OutlineInputBorder(
+                          borderSide:
+                              BorderSide(width: 1.5, color: vCubit.borderColor),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        border: OutlineInputBorder(
+                          borderSide:
+                              BorderSide(width: 1.5, color: vCubit.borderColor),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        labelText: 'Email',
+                        labelStyle: TextStyle(color: vCubit.textColor)),
+                  );
+                },
+              ),
+              BlocBuilder<ValidatorCubit, ValidatorState>(
+                builder: (context, state) {
+                  if (vCubit.showEmailNotValid) {
+                    return 'Email tidak valid'
+                        .text
+                        .color(CustomColor.error)
+                        .textStyle(CustomTextStyle.bodyMedium)
+                        .make()
+                        .pOnly(left: 12);
+                  }
+                  return Container();
+                },
+              ),
+              const Gap(24),
+              BlocConsumer<ValidatorCubit, ValidatorState>(
+                listener: (context, state) {
+                  if (state is ObstructChanged) {
+                    vCubit.obscureText = !vCubit.obscureText;
+                  }
+                  if (state is ValidateEmail) {
+                    if (state.emailIsValid) {
+                      cubit.login(emailC.text, passwordC.text);
+                    } else {
+                      vCubit.showEmailNotValid = true;
+                      vCubit.borderColor = CustomColor.error;
+                      vCubit.textColor = CustomColor.error;
+                    }
+                  }
+                },
+                builder: (context, state) {
+                  return TextField(
+                    controller: passwordC,
+                    keyboardType: TextInputType.emailAddress,
+                    obscureText: vCubit.obscureText,
+                    onChanged: (value) {
+                      if (emailC.text.isNotEmptyAndNotNull &&
+                          passwordC.text.isNotEmptyAndNotNull) {
+                        bCubit.changeButtonState(true);
+                      } else {
+                        bCubit.changeButtonState(false);
+                      }
+                    },
+                    decoration: InputDecoration(
                       border: OutlineInputBorder(
-                        borderSide:
-                            BorderSide(width: 1.5, color: vCubit.borderColor),
                         borderRadius: BorderRadius.circular(8),
                       ),
-                      labelText: 'Email',
-                      labelStyle: TextStyle(color: vCubit.textColor)),
-                );
-              },
-            ),
-            BlocBuilder<ValidatorCubit, ValidatorState>(
-              builder: (context, state) {
-                if (vCubit.showEmailNotValid) {
-                  return 'Email tidak valid'
-                      .text
-                      .color(CustomColor.error)
-                      .textStyle(CustomTextStyle.bodyMedium)
-                      .make()
-                      .pOnly(left: 12);
-                }
-                return Container();
-              },
-            ),
-            const Gap(12),
-            BlocConsumer<ValidatorCubit, ValidatorState>(
+                      suffixIcon: Icon(
+                        vCubit.obscureText
+                            ? Boxicons.bxs_show
+                            : Boxicons.bxs_hide,
+                        color: CustomColor.onSurfaceVariant,
+                      ).onTap(() {
+                        vCubit.obscureChange();
+                      }),
+                      labelText: 'Password',
+                    ),
+                  );
+                },
+              ),
+            ]).px24(),
+            const SizedBox().expand(),
+            BlocConsumer<ButtonCubit, ButtonState>(
               listener: (context, state) {
-                if (state is ObstructChanged) {
-                  vCubit.obscureText = !vCubit.obscureText;
-                }
-                if (state is ValidateEmail) {
-                  if (state.emailIsValid) {
-                    //TODO login
+                if (state is ChangeButtonState) {
+                  if (state.value) {
+                    vCubit.isLoginable = true;
+                    vCubit.backgroundButtonColor = CustomColor.primary;
+                    vCubit.textButtonColor = CustomColor.onPrimary;
                   } else {
-                    vCubit.showEmailNotValid = true;
-                    vCubit.borderColor = CustomColor.error;
-                    vCubit.textColor = CustomColor.error;
+                    vCubit.isLoginable = false;
+                    vCubit.backgroundButtonColor =
+                        CustomColor.onSurface.withOpacity(0.12);
+                    vCubit.textButtonColor =
+                        CustomColor.onSurface.withOpacity(0.52);
                   }
                 }
               },
               builder: (context, state) {
-                return TextField(
-                  controller: passwordC,
-                  keyboardType: TextInputType.emailAddress,
-                  obscureText: vCubit.obscureText,
-                  onChanged: (value) {},
-                  decoration: InputDecoration(
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    suffixIcon: Icon(
-                      vCubit.obscureText
-                          ? Boxicons.bxs_show
-                          : Boxicons.bxs_hide,
-                      color: CustomColor.onSurfaceVariant,
-                    ).onTap(() {
-                      vCubit.obscureChange();
-                    }),
-                    labelText: 'Password',
-                  ),
+                return BlocBuilder<LoginCubit, LoginState>(
+                  builder: (context, state) {
+                    if (state is LoginLoading) {
+                      return CircularProgressIndicator(
+                        color: CustomColor.onSurface.withOpacity(0.38),
+                        strokeWidth: 2,
+                      )
+                          .w(18)
+                          .h(18)
+                          .centered()
+                          .py(10)
+                          .box
+                          .color(CustomColor.onSurface.withOpacity(0.12))
+                          .withRounded(value: 100)
+                          .height(40)
+                          .width(Get.width)
+                          .make()
+                          .px24();
+                    }
+                    return GestureDetector(
+                      onTap: () {
+                        if (vCubit.isLoginable) {
+                          vCubit.validateEmail(emailC.text);
+                        }
+                      },
+                      child: 'Masuk'
+                          .text
+                          .color(vCubit.textButtonColor)
+                          .textStyle(CustomTextStyle.labelLarge)
+                          .makeCentered()
+                          .py(10)
+                          .box
+                          .color(vCubit.backgroundButtonColor)
+                          .withRounded(value: 100)
+                          .height(40)
+                          .width(Get.width)
+                          .make()
+                          .px24(),
+                    );
+                  },
                 );
               },
             ),
-          ]).px24(),
-          const Gap(32),
-          'Masuk'
-              .text
-              .color(CustomColor.surface)
-              .textStyle(CustomTextStyle.labelLarge)
-              .makeCentered()
-              .py(10)
-              .box
-              .color(CustomColor.primary)
-              .withRounded(value: 100)
-              .height(40)
-              .width(Get.width)
-              .make()
-              .onTap(() {
-            vCubit.validateEmail(emailC.text);
-          }).px24(),
-          const Gap(24),
-        ],
-        crossAlignment: CrossAxisAlignment.start,
+            const Gap(24),
+          ],
+          crossAlignment: CrossAxisAlignment.start,
+        ),
       ),
     );
   }
