@@ -166,7 +166,10 @@ class _ChooseNisnPage extends HookWidget {
                               .withRounded(value: 12)
                               .color(CustomColor.surface)
                               .make()
-                              .pOnly(top: 4, bottom: 4);
+                              .onTap(() {
+                            GetIt.I<NavigationServiceMain>()
+                                .pushNamed('/camera');
+                          }).pOnly(top: 4, bottom: 4);
                         }).w(Get.width)
                   ]).scrollVertical(physics: const BouncingScrollPhysics()),
                 )
@@ -178,13 +181,14 @@ class _ChooseNisnPage extends HookWidget {
                     .px(8)
                     .expand(),
                 const KeyboardWidget(),
+                const Gap(12),
                 HStack([
                   Icon(
                     Boxicons.bx_scan,
                     size: 24,
                     color: CustomColor.surface,
                   ),
-                  Gap(12),
+                  const Gap(12),
                   'Scan QR'
                       .text
                       .color(CustomColor.surface)

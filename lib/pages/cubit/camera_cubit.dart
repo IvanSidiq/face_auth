@@ -46,6 +46,8 @@ class CameraCubit extends Cubit<CameraState> {
   double similarity = 0.0;
   double minkowskiDist = 0.0;
 
+  String message = 'Wajah tidak ditemukan';
+
   Future<void> initCamera() async {
     await cameraService.initialize();
     initializeFaceDetector();
@@ -95,9 +97,7 @@ class CameraCubit extends Cubit<CameraState> {
 
   Future<void> dispose() async {
     timer!.cancel();
-    print('1');
     await cameraService.dispose();
-    print('2');
   }
 
   Future<void> processImage() async {
@@ -106,29 +106,59 @@ class CameraCubit extends Cubit<CameraState> {
     String filePath = file != null ? file.path : '';
     final inputImage = InputImage.fromFilePath(filePath);
     final faces = await faceDetector.processImage(inputImage);
-    detectedFace = faces[0];
+    if (faces.isEmpty) {
+      emit(NoFaceDetected());
+    } else {
+      detectedFace = faces[0];
 
-    double x = detectedFace!.boundingBox.left - 10;
-    double y = detectedFace!.boundingBox.top - 10;
-    double h = detectedFace!.boundingBox.height + 10;
-    double w = detectedFace!.boundingBox.width + 10;
+      double x = detectedFace!.boundingBox.left - 10;
+      double y = detectedFace!.boundingBox.top - 10;
+      double h = detectedFace!.boundingBox.height + 10;
+      double w = detectedFace!.boundingBox.width + 10;
 
-    List<int> bbox = [
-      x.toInt(),
-      y.toInt(),
-      w.toInt(),
-      h.toInt(),
-    ];
-    lastBBox = bbox;
+      // double x = 60;
+      // double y = 150;
+      // double h = 270;
+      // double w = 210;
 
-    String croppedPath =
-        '${(await getTemporaryDirectory()).path}/cropped_face.jpg';
+      print('$x, $y, $h, $w');
+      // jarak kamera dengan wajah
+      // h min 270
+      // w min 210
 
-    croppedPath =
-        imageService.drawRect(filePath, bbox[0], bbox[1], bbox[2], bbox[3]);
+      //Wajah apakah di tengah
+      // y = 75 -> 435
+      // x = 60 -> 420
+      if (h < 270 || w < 210) {
+        // face detected but not close enough
+        emit(FaceDetectedBut(message: 'Wajah terlalu jauh'));
+        return;
+      }
 
-    await getTfliteData(croppedPath);
-    emit(ImageProcessed(croppedPath));
+      if (!((y < 180 && y > 75) && (x < 160 && x > 60))) {
+        // face detected but not inside the circle
+        emit(FaceDetectedBut(
+            message: 'Mohon letakkan wajah di dalam lingkaran'));
+        return;
+      }
+
+      List<int> bbox = [
+        x.toInt(),
+        y.toInt(),
+        w.toInt(),
+        h.toInt(),
+      ];
+      lastBBox = bbox;
+
+      String croppedPath =
+          '${(await getTemporaryDirectory()).path}/cropped_face.jpg';
+
+      croppedPath =
+          imageService.drawRect(filePath, bbox[0], bbox[1], bbox[2], bbox[3]);
+
+      await getTfliteData(croppedPath);
+      emit(ImageProcessed(croppedPath));
+    }
   }
 
   Future<void> getTfliteData(String path) async {

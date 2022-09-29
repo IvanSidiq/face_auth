@@ -59,9 +59,14 @@ class _KeyboardWidget extends HookWidget {
         },
         builder: (context, state) {
           if (cubit.keyController != '') {
-            return cubit.keyController.text.center.size(28).make().px24();
+            return cubit.keyController.text
+                .textStyle(CustomTextStyle.headlineMedium)
+                .center
+                .size(28)
+                .make()
+                .px24();
           } else {
-            return 'Masukkan NISN'
+            return 'Masukkan NIS'
                 .text
                 .textStyle(CustomTextStyle.headlineMedium)
                 .color(CustomColor.onSurfaceVariant.withOpacity(0.38))
@@ -81,6 +86,7 @@ class _KeyboardWidget extends HookWidget {
         [
           HStack([
             Material(
+              color: Colors.transparent,
               child: InkWell(
                 splashColor: CustomColor.onSurface.withOpacity(0.08),
                 highlightColor: Colors.transparent,
@@ -92,6 +98,7 @@ class _KeyboardWidget extends HookWidget {
               ),
             ).expand(),
             Material(
+              color: Colors.transparent,
               child: InkWell(
                 splashColor: CustomColor.onSurface.withOpacity(0.08),
                 highlightColor: Colors.transparent,
@@ -103,6 +110,7 @@ class _KeyboardWidget extends HookWidget {
               ),
             ).expand(),
             Material(
+              color: Colors.transparent,
               child: InkWell(
                 splashColor: CustomColor.onSurface.withOpacity(0.08),
                 highlightColor: Colors.transparent,
@@ -116,6 +124,7 @@ class _KeyboardWidget extends HookWidget {
           ]).w(Get.width),
           HStack([
             Material(
+              color: Colors.transparent,
               child: InkWell(
                 splashColor: CustomColor.onSurface.withOpacity(0.08),
                 highlightColor: Colors.transparent,
@@ -127,6 +136,7 @@ class _KeyboardWidget extends HookWidget {
               ),
             ).expand(),
             Material(
+              color: Colors.transparent,
               child: InkWell(
                 splashColor: CustomColor.onSurface.withOpacity(0.08),
                 highlightColor: Colors.transparent,
@@ -138,6 +148,7 @@ class _KeyboardWidget extends HookWidget {
               ),
             ).expand(),
             Material(
+              color: Colors.transparent,
               child: InkWell(
                 splashColor: CustomColor.onSurface.withOpacity(0.08),
                 highlightColor: Colors.transparent,
@@ -151,6 +162,7 @@ class _KeyboardWidget extends HookWidget {
           ]).w(Get.width),
           HStack([
             Material(
+              color: Colors.transparent,
               child: InkWell(
                 splashColor: CustomColor.onSurface.withOpacity(0.08),
                 highlightColor: Colors.transparent,
@@ -162,6 +174,7 @@ class _KeyboardWidget extends HookWidget {
               ),
             ).expand(),
             Material(
+              color: Colors.transparent,
               child: InkWell(
                 splashColor: CustomColor.onSurface.withOpacity(0.08),
                 highlightColor: Colors.transparent,
@@ -173,6 +186,7 @@ class _KeyboardWidget extends HookWidget {
               ),
             ).expand(),
             Material(
+              color: Colors.transparent,
               child: InkWell(
                 splashColor: CustomColor.onSurface.withOpacity(0.08),
                 highlightColor: Colors.transparent,
@@ -193,6 +207,7 @@ class _KeyboardWidget extends HookWidget {
               child: ' '.text.size(24).makeCentered().box.height(62).make(),
             ).expand(),
             Material(
+              color: Colors.transparent,
               child: InkWell(
                 splashColor: CustomColor.onSurface.withOpacity(0.08),
                 highlightColor: Colors.transparent,
@@ -204,6 +219,7 @@ class _KeyboardWidget extends HookWidget {
               ),
             ).expand(),
             Material(
+              color: Colors.transparent,
               child: InkWell(
                 splashColor: CustomColor.onSurface.withOpacity(0.08),
                 highlightColor: Colors.transparent,
@@ -214,10 +230,19 @@ class _KeyboardWidget extends HookWidget {
                 onLongPress: () {
                   cubit.clearAll();
                 },
-                child: const Icon(
-                  Icons.backspace_outlined,
-                  size: 24,
-                ).box.height(62).color(Colors.transparent).make(),
+                child: Image.asset(
+                  'assets/icons/delete_icon.png',
+                  color: CustomColor.onSurface,
+                  fit: BoxFit.contain,
+                )
+                    .box
+                    .height(32)
+                    .width(32)
+                    .makeCentered()
+                    .box
+                    .height(62)
+                    .color(Colors.transparent)
+                    .make(),
               ),
             ).expand(),
           ]).w(Get.width),

@@ -8,7 +8,7 @@ part 'validator_state.dart';
 class ValidatorCubit extends Cubit<ValidatorState> {
   ValidatorCubit() : super(ValidatorInitial());
 
-  bool obscureText = false;
+  bool obscureText = true;
   bool showEmailNotValid = false;
   Color borderColor = CustomColor.primary;
   Color textColor = CustomColor.onSurfaceVariant;

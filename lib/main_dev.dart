@@ -1,4 +1,3 @@
-import 'package:face_auth/pages/nisn/choose_nisn_page.dart';
 import 'package:face_auth/pages/splash_screen.dart';
 import 'package:face_auth/routes.dart';
 import 'package:face_auth/services/di_service.dart';

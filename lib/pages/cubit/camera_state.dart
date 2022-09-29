@@ -19,6 +19,14 @@ class FaceDetected extends CameraState {
   FaceDetected(this.face);
 }
 
+class FaceDetectedBut extends CameraState {
+  final String message;
+
+  FaceDetectedBut({required this.message});
+}
+
+class NoFaceDetected extends CameraState {}
+
 class TfliteError extends CameraState {}
 
 class TfliteDataSuccess extends CameraState {

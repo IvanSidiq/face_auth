@@ -52,6 +52,15 @@ void configureRoutes() {
     ),
     transitionType: TransitionType.none,
   );
+
+  router.define(
+    '/camera',
+    handler: Handler(
+      handlerFunc: (BuildContext? context, Map<String, List<String>> params) =>
+          const CameraPage(),
+    ),
+    transitionType: TransitionType.none,
+  );
 }
 
 class _RoutesNotFound extends StatelessWidget {
