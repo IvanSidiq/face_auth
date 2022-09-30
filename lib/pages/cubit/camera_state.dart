@@ -21,8 +21,9 @@ class FaceDetected extends CameraState {
 
 class FaceDetectedBut extends CameraState {
   final String message;
+  final String message2;
 
-  FaceDetectedBut({required this.message});
+  FaceDetectedBut({required this.message, required this.message2});
 }
 
 class NoFaceDetected extends CameraState {}
@@ -50,3 +51,13 @@ class CalculateDistance extends CameraState {
 }
 
 class DataSaved extends CameraState {}
+
+class CountTimerStart extends CameraState {}
+
+class CountTimerEnd extends CameraState {}
+
+class ChangeCaptTimerValue extends CameraState {
+  final double captValue;
+
+  ChangeCaptTimerValue(this.captValue);
+}

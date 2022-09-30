@@ -1,25 +1,4 @@
-import 'package:face_auth/utils/colors.dart';
-import 'package:face_auth/utils/customs/custom_text_style.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:gap/gap.dart';
-import 'package:get/get.dart';
-import 'package:velocity_x/velocity_x.dart';
-
-import 'cubit/keyboard_cubit.dart';
-
-class KeyboardWidget extends StatelessWidget {
-  const KeyboardWidget({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => KeyboardCubit(),
-      child: const _KeyboardWidget(),
-    );
-  }
-}
+part of 'choose_nisn_page.dart';
 
 class _KeyboardWidget extends HookWidget {
   const _KeyboardWidget({Key? key}) : super(key: key);

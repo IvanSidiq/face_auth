@@ -1,10 +1,12 @@
+import 'package:face_auth/services/navigation_service.dart';
+import 'package:face_auth/utils/customs/custom_dialog.dart';
 import 'package:face_auth/widgets/camera_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:gap/gap.dart';
 import 'package:get/get.dart';
-import 'package:lottie/lottie.dart';
+import 'package:get_it/get_it.dart';
 import 'package:velocity_x/velocity_x.dart';
 
 import '../utils/colors.dart';
@@ -49,10 +51,30 @@ class _CameraPage extends HookWidget {
                 BlocConsumer<CameraCubit, CameraState>(
                   listener: (context, state) {
                     if (state is TfliteDataSuccess) {
+                      cubit.message = 'Wajah tidak ditemukan';
+                      cubit.message2 =
+                          'Posisikan wajah anda agar dapat terpindai oleh kamera dan pastikan anda melepas masker';
                       cubit.tfliteData = state.data;
                       if (cubit.savedUser != null) {
                         cubit.calculateDist();
                       }
+
+                      CustomDialog.showAnimationDialog(context,
+                          title: 'Verifikasi berhasil',
+                          body:
+                              'Verifikasi wajah anda berhasil, terimakasih sudah melakukan absensi hari ini',
+                          buttonText: 'Kembali ke halaman utama', onClick: () {
+                        GetIt.I<NavigationServiceMain>().pop();
+                        //Change to next shit
+                        if (cubit.timer == null) {
+                          cubit.streamFaceReader();
+                        } else {
+                          if (!cubit.timer!.isActive) cubit.streamFaceReader();
+                        }
+                      },
+                          animationWidth: 260,
+                          animationKey:
+                              'assets/animations/check_animation.json');
                     }
                     if (state is CameraInitialized) {
                       cubit.isInitialized = true;
@@ -60,15 +82,33 @@ class _CameraPage extends HookWidget {
                     if (state is ImageProcessed) {
                       cubit.imagePath = state.croppedPath;
                       cubit.message = 'Proses pemindaian wajah..';
+                      cubit.message2 =
+                          'Pertahankan posisi wajah anda hingga waktu pemindaian berakhir';
                     }
                     if (state is InitializeInterpreterSuccess) {
                       cubit.interpreter = state.interpreter;
                     }
                     if (state is NoFaceDetected) {
                       cubit.message = 'Wajah tidak ditemukan';
+                      cubit.message2 =
+                          'Posisikan wajah anda agar dapat terpindai oleh kamera dan pastikan anda melepas masker';
                     }
                     if (state is FaceDetectedBut) {
                       cubit.message = state.message;
+                      cubit.message2 = state.message2;
+                      if (cubit.timer == null) {
+                        cubit.streamFaceReader();
+                      } else {
+                        if (!cubit.timer!.isActive) cubit.streamFaceReader();
+                      }
+                    }
+                    if (state is ChangeCaptTimerValue) {
+                      cubit.captValue = state.captValue;
+                      if (cubit.captValue >= 1) {
+                        cubit.captTimer!.cancel();
+                        cubit.captValue = 0;
+                        cubit.processImage(realProcess: true);
+                      }
                     }
                   },
                   builder: (context, state) {
@@ -148,11 +188,7 @@ class _CameraPage extends HookWidget {
                             .textStyle(CustomTextStyle.titleLarge)
                             .color(Colors.white)
                             .make(),
-                        const Gap(50),
-                        Lottie.asset('assets/animations/check_animation.json')
-                            .w(200)
-                            .h(200),
-                        const Gap(100),
+                        const Gap(430),
                         BlocBuilder<CameraCubit, CameraState>(
                           builder: (context, state) {
                             return cubit.message.text
@@ -160,10 +196,42 @@ class _CameraPage extends HookWidget {
                                 .white
                                 .make();
                           },
-                        )
+                        ),
+                        const Gap(112),
+                        BlocBuilder<CameraCubit, CameraState>(
+                          builder: (context, state) {
+                            return cubit.message2.text.center
+                                .textStyle(CustomTextStyle.labelLarge)
+                                .white
+                                .make()
+                                .pSymmetric(h: 75);
+                          },
+                        ),
                       ],
                       crossAlignment: CrossAxisAlignment.center,
                     )).w(Get.width),
+                Positioned(
+                  top: 80,
+                  child: BlocBuilder<CameraCubit, CameraState>(
+                    builder: (context, state) {
+                      if (cubit.captValue != 0) {
+                        return Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            CircularProgressIndicator(
+                              value: cubit.captValue,
+                            )
+                                .box
+                                .width(Get.width - 65)
+                                .height(Get.width - 64)
+                                .make(),
+                          ],
+                        ).w(Get.width);
+                      }
+                      return Container();
+                    },
+                  ),
+                ),
                 Positioned(
                   bottom: 0,
                   child: VStack(

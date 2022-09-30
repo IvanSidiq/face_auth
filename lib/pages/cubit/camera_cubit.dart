@@ -39,6 +39,10 @@ class CameraCubit extends Cubit<CameraState> {
   bool isInitialized = false;
   String? imagePath;
   late Timer? timer;
+  late Timer? captTimer;
+  double captValue = 0;
+
+  late String croppedPath;
 
   List<int> lastBBox = [];
 
@@ -47,12 +51,15 @@ class CameraCubit extends Cubit<CameraState> {
   double minkowskiDist = 0.0;
 
   String message = 'Wajah tidak ditemukan';
+  String message2 =
+      'Posisikan wajah anda agar dapat terpindai oleh kamera dan pastikan anda melepas masker';
 
   Future<void> initCamera() async {
     await cameraService.initialize();
     initializeFaceDetector();
     await streamFaceReader();
     await initializeInterpreter();
+    croppedPath = '${(await getTemporaryDirectory()).path}/cropped_face.jpg';
     emit(CameraInitialized());
   }
 
@@ -96,11 +103,11 @@ class CameraCubit extends Cubit<CameraState> {
   }
 
   Future<void> dispose() async {
-    timer!.cancel();
+    if (timer != null) timer!.cancel();
     await cameraService.dispose();
   }
 
-  Future<void> processImage() async {
+  Future<void> processImage({bool realProcess = false}) async {
     XFile? file = await cameraService.takePicture();
     imageSize = cameraService.getImageSize();
     String filePath = file != null ? file.path : '';
@@ -116,48 +123,38 @@ class CameraCubit extends Cubit<CameraState> {
       double h = detectedFace!.boundingBox.height + 10;
       double w = detectedFace!.boundingBox.width + 10;
 
-      // double x = 60;
-      // double y = 150;
-      // double h = 270;
-      // double w = 210;
-
-      print('$x, $y, $h, $w');
-      // jarak kamera dengan wajah
-      // h min 270
-      // w min 210
-
-      //Wajah apakah di tengah
-      // y = 75 -> 435
-      // x = 60 -> 420
       if (h < 270 || w < 210) {
         // face detected but not close enough
-        emit(FaceDetectedBut(message: 'Wajah terlalu jauh'));
-        return;
-      }
-
-      if (!((y < 180 && y > 75) && (x < 160 && x > 60))) {
+        emit(FaceDetectedBut(
+            message: 'Wajah terlalu jauh',
+            message2:
+                'Posisikan wajah anda agar dapat terpindai oleh kamera dan pastikan anda melepas masker'));
+      } else if (!((y < 180 && y > 75) && (x < 160 && x > 60))) {
         // face detected but not inside the circle
         emit(FaceDetectedBut(
-            message: 'Mohon letakkan wajah di dalam lingkaran'));
-        return;
+            message: 'Mohon letakkan wajah di dalam lingkaran',
+            message2:
+                'Posisikan wajah anda agar dapat terpindai oleh kamera dan pastikan anda melepas masker'));
+      } else {
+        List<int> bbox = [
+          x.toInt(),
+          y.toInt(),
+          w.toInt(),
+          h.toInt(),
+        ];
+        lastBBox = bbox;
+
+        croppedPath =
+            imageService.drawRect(filePath, bbox[0], bbox[1], bbox[2], bbox[3]);
+
+        if (realProcess) {
+          await getTfliteData(croppedPath);
+        } else {
+          startCaptTimer();
+        }
+
+        emit(ImageProcessed(croppedPath));
       }
-
-      List<int> bbox = [
-        x.toInt(),
-        y.toInt(),
-        w.toInt(),
-        h.toInt(),
-      ];
-      lastBBox = bbox;
-
-      String croppedPath =
-          '${(await getTemporaryDirectory()).path}/cropped_face.jpg';
-
-      croppedPath =
-          imageService.drawRect(filePath, bbox[0], bbox[1], bbox[2], bbox[3]);
-
-      await getTfliteData(croppedPath);
-      emit(ImageProcessed(croppedPath));
     }
   }
 
@@ -181,6 +178,13 @@ class CameraCubit extends Cubit<CameraState> {
 
       emit(TfliteDataSuccess(List.from(output)));
     }
+  }
+
+  Future<void> startCaptTimer() async {
+    timer!.cancel();
+    captTimer = Timer.periodic(const Duration(milliseconds: 40), (time) async {
+      emit(ChangeCaptTimerValue(captValue + 0.02));
+    });
   }
 
   Future<void> saveData(List tfliteData, String user) async {

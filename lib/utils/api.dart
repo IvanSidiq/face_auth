@@ -4,6 +4,8 @@ String kApiKebab =
     FlavorConfig.instance.name == 'LOCAL' ? ':4001/api/v1' : '/kebab/api/v1';
 String kApiNogosari =
     FlavorConfig.instance.name == 'LOCAL' ? ':4000/api/v1' : '/nogosari/api/v1';
+String kApiSekoteng =
+    FlavorConfig.instance.name == 'LOCAL' ? ':4000/api/v1' : '/sekoteng/api/v1';
 
 String type = FlavorConfig.instance.name == 'PRODUCTION'
     ? 'prod'
@@ -56,3 +58,6 @@ String kApiProvince =
 String kApiCity = 'https://harisalghifary.github.io/data-indonesia/kabupaten/';
 String kApiDistrict =
     'https://harisalghifary.github.io/data-indonesia/kecamatan/';
+
+//Attendance
+String kApiAttendanceList = '$kApiSekoteng/attendances';
