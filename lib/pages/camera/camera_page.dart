@@ -1,6 +1,8 @@
+import 'package:face_auth/pages/camera/cubit/face_attendance_cubit.dart';
 import 'package:face_auth/services/navigation_service.dart';
 import 'package:face_auth/utils/customs/custom_dialog.dart';
 import 'package:face_auth/widgets/camera_widget.dart';
+import 'package:face_auth/widgets/custom_loading_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -9,32 +11,44 @@ import 'package:get/get.dart';
 import 'package:get_it/get_it.dart';
 import 'package:velocity_x/velocity_x.dart';
 
-import '../utils/colors.dart';
-import '../utils/customs/custom_text_style.dart';
-import '../widgets/face_painter.dart';
+import '../../utils/colors.dart';
+import '../../utils/customs/custom_text_style.dart';
+import '../../widgets/face_painter.dart';
 import 'cubit/camera_cubit.dart';
 
 class CameraPage extends StatelessWidget {
-  const CameraPage({Key? key}) : super(key: key);
+  const CameraPage({Key? key, required this.userId}) : super(key: key);
+  final String userId;
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => CameraCubit(),
-      child: const _CameraPage(),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (context) => CameraCubit(),
+        ),
+        BlocProvider(
+          create: (context) => FaceAttendanceCubit(),
+        ),
+      ],
+      child: _CameraPage(userId: userId),
     );
   }
 }
 
 class _CameraPage extends HookWidget {
-  const _CameraPage({Key? key}) : super(key: key);
+  const _CameraPage({Key? key, required this.userId}) : super(key: key);
+  final String userId;
 
   @override
   Widget build(BuildContext context) {
     final cubit = context.read<CameraCubit>();
+    final fCubit = context.read<FaceAttendanceCubit>();
 
     useEffect(() {
       cubit.initCamera();
+      fCubit.getAttendanceData(userId);
+      fCubit.getAttendanceFace(userId);
       return;
     }, [cubit]);
 
@@ -234,149 +248,59 @@ class _CameraPage extends HookWidget {
                 ),
                 Positioned(
                   bottom: 0,
-                  child: VStack(
-                    [
-                      'Bondan Prakoso'
-                          .text
-                          .align(TextAlign.center)
-                          .textStyle(CustomTextStyle.titleMedium)
-                          .make(),
-                      const Gap(8),
-                      '1234567'
-                          .text
-                          .align(TextAlign.center)
-                          .textStyle(CustomTextStyle.bodyMedium)
-                          .make(),
-                    ],
-                    crossAlignment: CrossAxisAlignment.center,
-                  )
-                      .p24()
-                      .box
-                      .color(CustomColor.surface)
-                      .topRounded(value: 16)
-                      .make()
-                      .w(Get.width),
+                  child: BlocConsumer<FaceAttendanceCubit, FaceAttendanceState>(
+                    listener: (context, state) {
+                      if (state is GetAttendanceDataSuccess) {
+                        fCubit.name = state.attendance.name;
+                        fCubit.nis = state.attendance.nis;
+                        // print(fCubit.name);
+                        // print(fCubit.nis);
+                      }
+                      if (state is GetAttendanceFaceDataSuccess) {
+                        if (state.face.vector != null) {
+                          fCubit.faceVector = state.face.vector!;
+                          // print(fCubit.faceVector);
+                        }
+                      }
+                    },
+                    builder: (context, state) {
+                      if (state is GetAttendanceDataLoading) {
+                        return const VStack(
+                          [
+                            CustomLoadingWidget(),
+                          ],
+                          crossAlignment: CrossAxisAlignment.center,
+                        )
+                            .p24()
+                            .box
+                            .color(CustomColor.surface)
+                            .topRounded(value: 16)
+                            .make()
+                            .w(Get.width);
+                      }
+                      return VStack(
+                        [
+                          fCubit.name.text
+                              .align(TextAlign.center)
+                              .textStyle(CustomTextStyle.titleMedium)
+                              .make(),
+                          const Gap(8),
+                          fCubit.nis.text
+                              .align(TextAlign.center)
+                              .textStyle(CustomTextStyle.bodyMedium)
+                              .make(),
+                        ],
+                        crossAlignment: CrossAxisAlignment.center,
+                      )
+                          .p24()
+                          .box
+                          .color(CustomColor.surface)
+                          .topRounded(value: 16)
+                          .make()
+                          .w(Get.width);
+                    },
+                  ),
                 ),
-
-                // Row(
-                //   mainAxisAlignment: MainAxisAlignment.center,
-                //   children: [
-                //     BlocConsumer<CameraCubit, CameraState>(
-                //       listener: (context, state) {},
-                //       builder: (context, state) {
-                //         return ((cubit.savedUser != null)
-                //                 ? '${cubit.savedUser!}\'s face'
-                //                 : 'No saved profile')
-                //             .text
-                //             .make();
-                //       },
-                //     ),
-                //     const SizedBox(
-                //       width: 30,
-                //     ),
-                //     GestureDetector(
-                //       onTap: () {
-                //         if (cubit.tfliteData != null) {
-                //           showDialog(
-                //                   context: context,
-                //                   builder: (context) {
-                //                     return Dialog(
-                //                       child: TextField(
-                //                               decoration: InputDecoration(
-                //                                   label: 'Name'.text.make()),
-                //                               onSubmitted: (val) {
-                //                                 Navigator.pop(context, val);
-                //                               })
-                //                           .box
-                //                           .p16
-                //                           .color(CustomColor.surface)
-                //                           .rounded
-                //                           .make(),
-                //                     );
-                //                   })
-                //               .then((value) =>
-                //                   cubit.saveData(cubit.tfliteData!, value));
-                //         }
-                //       },
-                //       child:
-                //           'Save Profile'.text.white.make().box.p16.blue500.make(),
-                //     ),
-                //   ],
-                // ),
-                // const SizedBox(height: 16),
-                // BlocConsumer<CameraCubit, CameraState>(
-                //   listener: (context, state) {
-                //     if (state is CalculateDistance) {
-                //       cubit.currDist = state.dist;
-                //       cubit.similarity = state.similarity;
-                //       cubit.minkowskiDist = state.minkowski;
-                //     }
-                //   },
-                //   builder: (context, state) {
-                //     return VStack(
-                //       [
-                //         'Distance similarity : ${cubit.currDist.toStringAsFixed(2)}'
-                //             .text
-                //             .make()
-                //             .box
-                //             .p16
-                //             .green100
-                //             .make(),
-                //         const SizedBox(height: 16),
-                //         'Cosine Similarity : ${cubit.similarity.toStringAsFixed(2)}'
-                //             .text
-                //             .make()
-                //             .box
-                //             .p16
-                //             .green100
-                //             .make(),
-                //         const SizedBox(height: 16),
-                //         'Minkowski Similarity : ${cubit.minkowskiDist.toStringAsFixed(2)}'
-                //             .text
-                //             .make()
-                //             .box
-                //             .p16
-                //             .green100
-                //             .make(),
-                //         const SizedBox(height: 16),
-                //       ],
-                //       crossAlignment: CrossAxisAlignment.center,
-                //     );
-                //   },
-                // ),
-                // const SizedBox(height: 16),
-                // HStack([
-                //   BlocBuilder<CameraCubit, CameraState>(
-                //     builder: (context, state) {
-                //       return SizedBox(
-                //         width: 50,
-                //         height: 50,
-                //         child: cubit.imagePath != null
-                //             ? Image.file(
-                //                 File(cubit.imagePath!),
-                //                 fit: BoxFit.contain,
-                //               )
-                //             : Container(),
-                //       );
-                //     },
-                //   ),
-                //   // const SizedBox(width: 10),
-                //   // BlocBuilder<CameraCubit, CameraState>(
-                //   //   builder: (context, state) {
-                //   //     return SizedBox(
-                //   //       width: 50,
-                //   //       height: 50,
-                //   //       child: cubit.userSavedPath != null
-                //   //           ? Image.file(
-                //   //               File(cubit.userSavedPath!),
-                //   //               fit: BoxFit.contain,
-                //   //             )
-                //   //           : Container(),
-                //   //     );
-                //   //   },
-                //   // ),
-                //   // const SizedBox(width: 10),
-                // ]),
               ],
             ).backgroundColor(CustomColor.surface).w(Get.width).h(Get.height),
           ),

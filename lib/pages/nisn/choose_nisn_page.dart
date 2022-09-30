@@ -229,13 +229,14 @@ class _ChooseNisnPage extends HookWidget {
                                     .make()
                                     .onTap(() {
                                   GetIt.I<NavigationServiceMain>()
-                                      .pushNamed('/camera');
+                                      .pushNamed('/camera', args: {
+                                    'userId': state.attendances[index].userId
+                                  });
                                 }).pOnly(top: 4, bottom: 4);
                               });
                         }
                         if (state is AttendanceLoading) {
-                          return const CustomLoadingWidget()
-                              .pOnly(top: Get.height / 4);
+                          return const CustomLoadingWidget().pOnly(top: 30);
                         }
                         return Container();
                       },

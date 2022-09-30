@@ -1,3 +1,5 @@
+import 'package:face_auth/models/attendance_face.dart';
+
 import '../helper/base_repository.dart';
 import '../models/attendance.dart';
 import '../models/base_response.dart';
@@ -26,6 +28,38 @@ class AttendanceRepository extends BaseRepository {
         statusCode: response.statusCode,
         data: data,
         meta: meta,
+      );
+    }
+    return response;
+  }
+
+  Future<BaseResponse> getAttendanceData({
+    String userId = '',
+  }) async {
+    final response = await fetch(kApiAttendanceStudentData, queryParameters: {
+      'userId': userId,
+    });
+
+    if (response.statusCode == 200) {
+      final Attendance data = Attendance.fromJson(response.data);
+      return BaseResponse(
+        statusCode: response.statusCode,
+        data: data,
+      );
+    }
+    return response;
+  }
+
+  Future<BaseResponse> getAttendanceFaceData({
+    String userId = '',
+  }) async {
+    final response = await fetch('$kApiAttendanceStudentFace/$userId');
+
+    if (response.statusCode == 200) {
+      final AttendanceFace data = AttendanceFace.fromJson(response.data);
+      return BaseResponse(
+        statusCode: response.statusCode,
+        data: data,
       );
     }
     return response;

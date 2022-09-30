@@ -61,3 +61,5 @@ String kApiDistrict =
 
 //Attendance
 String kApiAttendanceList = '$kApiSekoteng/attendances';
+String kApiAttendanceStudentData = '$kApiSekoteng/attendances/students';
+String kApiAttendanceStudentFace = '$kApiSekoteng/face-vector';

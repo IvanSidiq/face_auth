@@ -12,9 +12,9 @@ import 'package:image/image.dart' as img;
 import 'package:path_provider/path_provider.dart';
 import 'package:tflite_flutter/tflite_flutter.dart';
 
-import '../../services/camera_service.dart';
-import '../../services/image_service.dart';
-import '../../services/ml_service.dart';
+import '../../../services/camera_service.dart';
+import '../../../services/image_service.dart';
+import '../../../services/ml_service.dart';
 
 part 'camera_state.dart';
 
@@ -57,7 +57,7 @@ class CameraCubit extends Cubit<CameraState> {
   Future<void> initCamera() async {
     await cameraService.initialize();
     initializeFaceDetector();
-    await streamFaceReader();
+    // await streamFaceReader();
     await initializeInterpreter();
     croppedPath = '${(await getTemporaryDirectory()).path}/cropped_face.jpg';
     emit(CameraInitialized());

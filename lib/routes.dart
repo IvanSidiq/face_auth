@@ -1,4 +1,4 @@
-import 'package:face_auth/pages/camera_page.dart';
+import 'package:face_auth/pages/camera/camera_page.dart';
 import 'package:face_auth/pages/nisn/choose_nisn_page.dart';
 import 'package:fluro/fluro.dart';
 import 'package:flutter/material.dart';
@@ -20,9 +20,10 @@ void configureRoutes() {
   router.define(
     '/camera',
     handler: Handler(
-      handlerFunc: (BuildContext? context, Map<String, List<String>> params) =>
-          const CameraPage(),
-    ),
+        handlerFunc: (BuildContext? context, Map<String, List<String>> params) {
+      final args = context!.arguments as Map<String, dynamic>;
+      return CameraPage(userId: args['userId']);
+    }),
     transitionType: TransitionType.none,
   );
 
@@ -49,15 +50,6 @@ void configureRoutes() {
     handler: Handler(
       handlerFunc: (BuildContext? context, Map<String, List<String>> params) =>
           const ScannerScreen(),
-    ),
-    transitionType: TransitionType.none,
-  );
-
-  router.define(
-    '/camera',
-    handler: Handler(
-      handlerFunc: (BuildContext? context, Map<String, List<String>> params) =>
-          const CameraPage(),
     ),
     transitionType: TransitionType.none,
   );

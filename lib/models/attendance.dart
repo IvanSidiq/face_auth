@@ -17,22 +17,22 @@ class Attendance {
   String nis = '';
 
   Attendance({
-    id = '',
-    createdAt = '',
-    updatedAt = '',
-    deletedAt = '',
-    status = -1,
-    checkIn = '',
-    confidence = -1,
-    lateDurationInMinutes = -1,
-    dispensationId = '',
-    dateId = '',
-    userId = '',
-    schoolGroupId = '',
-    schoolId = '',
-    selfieFileName = '',
-    name = '',
-    nis = '',
+    this.id = '',
+    this.createdAt = '',
+    this.updatedAt = '',
+    this.deletedAt = '',
+    this.status = -1,
+    this.checkIn = '',
+    this.confidence = -1,
+    this.lateDurationInMinutes = -1,
+    this.dispensationId = '',
+    this.dateId = '',
+    this.userId = '',
+    this.schoolGroupId = '',
+    this.schoolId = '',
+    this.selfieFileName = '',
+    this.name = '',
+    this.nis = '',
   });
 
   Attendance.fromJson(Map<String, dynamic> json) {
