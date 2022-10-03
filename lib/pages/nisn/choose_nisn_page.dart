@@ -228,10 +228,12 @@ class _ChooseNisnPage extends HookWidget {
                                     .color(CustomColor.surface)
                                     .make()
                                     .onTap(() {
-                                  GetIt.I<NavigationServiceMain>()
-                                      .pushNamed('/camera', args: {
-                                    'userId': state.attendances[index].userId
-                                  });
+                                  if (isChoosable) {
+                                    GetIt.I<NavigationServiceMain>()
+                                        .pushNamed('/camera', args: {
+                                      'userId': state.attendances[index].userId
+                                    });
+                                  }
                                 }).pOnly(top: 4, bottom: 4);
                               });
                         }
@@ -274,8 +276,15 @@ class _ChooseNisnPage extends HookWidget {
                     .color(CustomColor.primary)
                     .width(Get.width)
                     .make()
-                    .onTap(() {
-                  GetIt.I<NavigationServiceMain>().pushNamed('/scanner');
+                    .onTap(() async {
+                  await GetIt.I<NavigationServiceMain>()
+                      .pushNamed('/scanner')!
+                      .then((value) {
+                    if (value != null) {
+                      GetIt.I<NavigationServiceMain>()
+                          .pushNamed('/camera', args: {'userId': value});
+                    }
+                  });
                 }),
                 // .box
                 // .withShadow([

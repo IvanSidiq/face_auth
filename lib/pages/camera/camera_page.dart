@@ -262,6 +262,32 @@ class _CameraPage extends HookWidget {
                           // print(fCubit.faceVector);
                         }
                       }
+                      if (state is GetAttendanceDataFailed) {
+                        cubit.dispose();
+                        GetIt.I<NavigationServiceMain>().pop();
+                        CustomDialog.showImageDialog(context,
+                            title: 'Kode QR tidak ditemukan',
+                            body:
+                                'Pastikan kode QR yang dipindai sudah benar. Silakan coba lagi atau gunakan NIS untuk melanjutkan presensi.',
+                            buttonText: 'Pindai ulang',
+                            onClick: () {
+                              GetIt.I<NavigationServiceMain>()
+                                  .pushNamed('/scanner')!
+                                  .then((value) {
+                                if (value != null) {
+                                  GetIt.I<NavigationServiceMain>().pushNamed(
+                                      '/camera',
+                                      args: {'userId': value});
+                                }
+                              });
+                            },
+                            button2Text: 'Gunakan NIS',
+                            onClick2: () {
+                              GetIt.I<NavigationServiceMain>().pop();
+                            },
+                            imageWidth: 120,
+                            imageKey: 'assets/images/not_found.png');
+                      }
                     },
                     builder: (context, state) {
                       if (state is GetAttendanceDataLoading) {

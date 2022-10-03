@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../widgets/custom_alert_widget.dart';
 import '../../widgets/custom_animation_dialog_widget.dart';
+import '../../widgets/custom_image_dialog_widget.dart';
 import '../../widgets/custom_loading_dialog_widget.dart';
 
 class CustomDialog {
@@ -57,6 +58,33 @@ class CustomDialog {
             onClick: onClick,
             animationKey: animationKey,
             animationWidth: animationWidth,
+          );
+        });
+  }
+
+  static void showImageDialog(
+    BuildContext context, {
+    required String title,
+    required String body,
+    required String buttonText,
+    required VoidCallback onClick,
+    String? button2Text,
+    VoidCallback? onClick2,
+    required double imageWidth,
+    required String imageKey,
+  }) {
+    showDialog(
+        context: context,
+        builder: (context) {
+          return CustomImageWidget(
+            title: title,
+            body: body,
+            buttonText: buttonText,
+            onClick: onClick,
+            button2Text: button2Text,
+            onClick2: onClick2,
+            imageKey: imageKey,
+            imageWidth: imageWidth,
           );
         });
   }

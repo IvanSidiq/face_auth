@@ -80,7 +80,8 @@ class _ScannerScreen extends HookWidget {
           BlocListener<ScannerCubit, ScannerState>(
             listener: (context, state) {
               if (state is ScannerSuccess) {
-                //TODO: aasdw
+                GetIt.I<NavigationServiceMain>()
+                    .pop(state.qrData); //TODO scanner screen
               }
               if (state is ScannerFailed) {
                 CustomDialog.showAlertDialog(context,
@@ -92,28 +93,6 @@ class _ScannerScreen extends HookWidget {
                   GetIt.I<NavigationServiceMain>().pop();
                   cameraController.start();
                 }, onYes: () {});
-              }
-              if (state is ScannerLauncUrl) {
-                CustomDialog.showAlertDialog(context,
-                    title: 'Akses tautan eksternal',
-                    body:
-                        'Membuka tautan pada kode QR akan meneruskan Anda ke ${state.qrUrl}. Apakah anda ingin melanjutkan?',
-                    yesText: 'Lanjutkan',
-                    withoutYes: false,
-                    onCancel: () {
-                      GetIt.I<NavigationServiceMain>().pop();
-                      cameraController.start();
-                    },
-                    cancelText: 'Batal',
-                    onYes: () {
-                      final url = Uri.tryParse(state.qrUrl);
-                      if (url != null) {
-                        GetIt.I<NavigationServiceMain>().pop();
-                        GetIt.I<NavigationServiceMain>().pop();
-
-                        launchUrl(url, mode: LaunchMode.externalApplication);
-                      }
-                    });
               }
             },
             child: MobileScanner(
