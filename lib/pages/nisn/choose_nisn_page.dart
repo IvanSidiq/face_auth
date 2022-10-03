@@ -68,6 +68,11 @@ class _ChooseNisnPage extends HookWidget {
 
     return Scaffold(
       backgroundColor: CustomColor.surface,
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          GetIt.I<NavigationServiceMain>().pushNamed('/camera');
+        },
+      ),
       body: SafeArea(
         child: BlocConsumer<SchoolProfileCubit, SchoolProfileState>(
           listener: (context, state) {

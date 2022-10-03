@@ -16,6 +16,7 @@ class CustomAnimationDialogWidget extends StatelessWidget {
     required this.buttonText,
     required this.animationWidth,
     required this.animationKey,
+    required this.fieldController,
   }) : super(key: key);
   final String title;
   final String body;
@@ -23,6 +24,7 @@ class CustomAnimationDialogWidget extends StatelessWidget {
   final String buttonText;
   final double animationWidth;
   final String animationKey;
+  final TextEditingController fieldController;
 
   @override
   Widget build(BuildContext context) {
@@ -46,6 +48,11 @@ class CustomAnimationDialogWidget extends StatelessWidget {
                   .textStyle(CustomTextStyle.bodyMedium)
                   .color(CustomColor.onSurfaceVariant)
                   .make(),
+              const Gap(12),
+              TextField(
+                controller: fieldController,
+                decoration: InputDecoration(label: 'Name'.text.make()),
+              ),
               const Gap(24),
               buttonText.text
                   .color(CustomColor.onPrimary)
@@ -65,6 +72,10 @@ class CustomAnimationDialogWidget extends StatelessWidget {
             ],
             crossAlignment: CrossAxisAlignment.center,
           ).p24(),
-        ).withRounded(value: 28).color(CustomColor.surface).make());
+        )
+            .withRounded(value: 28)
+            .color(CustomColor.surface)
+            .make()
+            .scrollVertical());
   }
 }

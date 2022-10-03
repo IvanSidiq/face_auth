@@ -45,6 +45,8 @@ class _CameraPage extends HookWidget {
     final cubit = context.read<CameraCubit>();
     final fCubit = context.read<FaceAttendanceCubit>();
 
+    final controller = useTextEditingController();
+
     useEffect(() {
       cubit.initCamera();
       fCubit.getAttendanceData(userId);
@@ -75,11 +77,15 @@ class _CameraPage extends HookWidget {
 
                       CustomDialog.showAnimationDialog(context,
                           title: 'Verifikasi berhasil',
+                          controller: controller,
                           body:
                               'Verifikasi wajah anda berhasil, terimakasih sudah melakukan absensi hari ini',
-                          buttonText: 'Kembali ke halaman utama', onClick: () {
+                          buttonText: 'Send your face', onClick: () async {
                         GetIt.I<NavigationServiceMain>().pop();
-                        //Change to next shit
+                        await cubit.saveAsFile(
+                            state.data.cast<double>(), controller.text);
+
+                        //TODO: Change to next shit
                         if (cubit.timer == null) {
                           cubit.streamFaceReader();
                         } else {

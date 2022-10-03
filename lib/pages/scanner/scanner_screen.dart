@@ -60,7 +60,7 @@ class _ScannerScreen extends HookWidget {
             icon: ValueListenableBuilder(
               valueListenable: cameraController.torchState,
               builder: (context, state, child) {
-                switch (state as TorchState) {
+                switch (state) {
                   case TorchState.off:
                     return Icon(Boxicons.bx_bolt_circle,
                         size: 24, color: CustomColor.onSurface);
@@ -80,8 +80,7 @@ class _ScannerScreen extends HookWidget {
           BlocListener<ScannerCubit, ScannerState>(
             listener: (context, state) {
               if (state is ScannerSuccess) {
-                GetIt.I<NavigationServiceMain>()
-                    .pop(state.qrData); //TODO scanner screen
+                GetIt.I<NavigationServiceMain>().pop(state.qrData);
               }
               if (state is ScannerFailed) {
                 CustomDialog.showAlertDialog(context,

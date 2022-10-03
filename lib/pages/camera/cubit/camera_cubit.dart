@@ -1,15 +1,18 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
 import 'dart:math';
 import 'dart:typed_data';
 
 import 'package:bloc/bloc.dart';
 import 'package:camera/camera.dart';
+import 'package:face_auth/models/attendance_face.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:google_mlkit_face_detection/google_mlkit_face_detection.dart';
 import 'package:image/image.dart' as img;
 import 'package:path_provider/path_provider.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:tflite_flutter/tflite_flutter.dart';
 
 import '../../../services/camera_service.dart';
@@ -57,7 +60,7 @@ class CameraCubit extends Cubit<CameraState> {
   Future<void> initCamera() async {
     await cameraService.initialize();
     initializeFaceDetector();
-    // await streamFaceReader();
+    await streamFaceReader();
     await initializeInterpreter();
     croppedPath = '${(await getTemporaryDirectory()).path}/cropped_face.jpg';
     emit(CameraInitialized());
@@ -285,5 +288,22 @@ class CameraCubit extends Cubit<CameraState> {
     timer = Timer.periodic(const Duration(seconds: 2), (time) async {
       await processImage();
     });
+  }
+
+  Future<void> saveAsFile(List<double> tfLiteDataC, String name) async {
+    AttendanceFace face = AttendanceFace(
+      id: '',
+      createdAt: DateTime.now().toString(),
+      updatedAt: DateTime.now().toString(),
+      deletedAt: '',
+      vector: tfLiteDataC,
+    );
+
+    final faceJsonPath =
+        '${(await getTemporaryDirectory()).path}/${name}_face.json';
+
+    final encodedJson = jsonEncode(face.toJson());
+    File(faceJsonPath).writeAsString(encodedJson);
+    Share.shareFiles([faceJsonPath]);
   }
 }

@@ -47,6 +47,7 @@ class CustomDialog {
     required VoidCallback onClick,
     required double animationWidth,
     required String animationKey,
+    required TextEditingController controller,
   }) {
     showDialog(
         context: context,
@@ -58,6 +59,7 @@ class CustomDialog {
             onClick: onClick,
             animationKey: animationKey,
             animationWidth: animationWidth,
+            fieldController: controller,
           );
         });
   }
