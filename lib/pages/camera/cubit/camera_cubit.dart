@@ -304,6 +304,6 @@ class CameraCubit extends Cubit<CameraState> {
 
     final encodedJson = jsonEncode(face.toJson());
     File(faceJsonPath).writeAsString(encodedJson);
-    Share.shareFiles([faceJsonPath]);
+    Share.shareFiles([faceJsonPath, croppedPath]);
   }
 }

@@ -199,37 +199,38 @@ class _CameraPage extends HookWidget {
                   ),
                 ),
                 Positioned(
-                    top: 0,
-                    child: VStack(
-                      [
-                        const Gap(32),
-                        'Verifikasi Wajah'
-                            .text
-                            .textStyle(CustomTextStyle.titleLarge)
-                            .color(Colors.white)
-                            .make(),
-                        const Gap(430),
-                        BlocBuilder<CameraCubit, CameraState>(
-                          builder: (context, state) {
-                            return cubit.message.text
-                                .textStyle(CustomTextStyle.labelLarge)
-                                .white
-                                .make();
-                          },
-                        ),
-                        const Gap(112),
-                        BlocBuilder<CameraCubit, CameraState>(
-                          builder: (context, state) {
-                            return cubit.message2.text.center
-                                .textStyle(CustomTextStyle.labelLarge)
-                                .white
-                                .make()
-                                .pSymmetric(h: 75);
-                          },
-                        ),
-                      ],
-                      crossAlignment: CrossAxisAlignment.center,
-                    )).w(Get.width),
+                  top: 0,
+                  child: VStack(
+                    [
+                      const Gap(32),
+                      'Verifikasi Wajah'
+                          .text
+                          .textStyle(CustomTextStyle.titleLarge)
+                          .color(Colors.white)
+                          .make(),
+                      const Gap(430),
+                      BlocBuilder<CameraCubit, CameraState>(
+                        builder: (context, state) {
+                          return cubit.message.text
+                              .textStyle(CustomTextStyle.labelLarge)
+                              .white
+                              .make();
+                        },
+                      ),
+                      const Gap(112),
+                      BlocBuilder<CameraCubit, CameraState>(
+                        builder: (context, state) {
+                          return cubit.message2.text.center
+                              .textStyle(CustomTextStyle.labelLarge)
+                              .white
+                              .make()
+                              .pSymmetric(h: 75);
+                        },
+                      ),
+                    ],
+                    crossAlignment: CrossAxisAlignment.center,
+                  ).w(Get.width),
+                ),
                 Positioned(
                   top: 80,
                   child: BlocBuilder<CameraCubit, CameraState>(
