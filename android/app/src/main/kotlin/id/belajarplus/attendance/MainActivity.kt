@@ -1,4 +1,4 @@
-package com.example.face_auth
+package id.belajarplus.attendance
 
 import io.flutter.embedding.android.FlutterActivity
 

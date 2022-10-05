@@ -42,7 +42,7 @@ class Attendance {
     deletedAt = json['deletedAt'] ?? '';
     status = json['status'] ?? -1;
     checkIn = json['checkIn'] ?? '';
-    confidence = json['confidence'] ?? 0;
+    confidence = double.tryParse(json['confidence'].toString()) ?? 0;
     lateDurationInMinutes = json['lateDurationInMinutes'] ?? -1;
     dispensationId = json['dispensationId'] ?? '';
     dateId = json['dateId'] ?? '';

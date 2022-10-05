@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.face_auth">
+    package="id.belajarplus.attendance">
    <application
-        android:label="face_auth"
+        android:label="Attendance"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity

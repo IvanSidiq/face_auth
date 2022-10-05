@@ -1,0 +1,126 @@
+{
+  "project_info": {
+    "project_number": "1053115180822",
+    "project_id": "bplus-url-shortener",
+    "storage_bucket": "bplus-url-shortener.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1053115180822:android:9dc616c987da79784f9237",
+        "android_client_info": {
+          "package_name": "id.belajarplus"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1053115180822-h7efbdiqr3ve4hsm98b2lviu517ktsv3.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDphwmhZReXJvIaa1h1r164JuJ4C3hgJgQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1053115180822-h7efbdiqr3ve4hsm98b2lviu517ktsv3.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1053115180822:android:fb278dc213933eac4f9237",
+        "android_client_info": {
+          "package_name": "id.belajarplus.attendance"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1053115180822-h7efbdiqr3ve4hsm98b2lviu517ktsv3.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDphwmhZReXJvIaa1h1r164JuJ4C3hgJgQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1053115180822-h7efbdiqr3ve4hsm98b2lviu517ktsv3.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1053115180822:android:ab73332929d59adc4f9237",
+        "android_client_info": {
+          "package_name": "id.belajarplus.dev"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1053115180822-h7efbdiqr3ve4hsm98b2lviu517ktsv3.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDphwmhZReXJvIaa1h1r164JuJ4C3hgJgQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1053115180822-h7efbdiqr3ve4hsm98b2lviu517ktsv3.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1053115180822:android:6c935dfe75bf0da84f9237",
+        "android_client_info": {
+          "package_name": "id.belajarplus.staging"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1053115180822-h7efbdiqr3ve4hsm98b2lviu517ktsv3.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDphwmhZReXJvIaa1h1r164JuJ4C3hgJgQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1053115180822-h7efbdiqr3ve4hsm98b2lviu517ktsv3.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

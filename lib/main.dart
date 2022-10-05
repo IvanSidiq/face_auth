@@ -1,6 +1,7 @@
 import 'package:face_auth/routes.dart';
 import 'package:face_auth/services/di_service.dart';
 import 'package:face_auth/services/navigation_service.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:fluro/fluro.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
@@ -8,10 +9,13 @@ import 'package:sentry_flutter/sentry_flutter.dart';
 
 import 'pages/nisn/choose_nisn_page.dart';
 
-void main() {
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
+
   DIService.initialize();
   configureRoutes();
+
   runApp(const FaceAuthApp());
 }
 

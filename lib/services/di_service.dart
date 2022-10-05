@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:face_auth/services/user_service.dart';
+import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'package:fluro/fluro.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get_it/get_it.dart';
@@ -26,6 +27,8 @@ class DIService {
         fileService: HttpFileService(),
       ),
     ));
+    GetIt.I
+        .registerSingleton<FirebaseRemoteConfig>(FirebaseRemoteConfig.instance);
 
     GetIt.I
         .registerSingleton<FlutterSecureStorage>(const FlutterSecureStorage());
