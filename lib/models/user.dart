@@ -39,8 +39,8 @@ class User {
     name = json['name'] ?? '';
     email = json['email'] ?? '';
     schoolId = json['schoolId'] ?? '';
-    status = json['status'] = -1;
-    role = json['role'] = -1;
+    status = json['status'] ?? -1;
+    role = json['role'] ?? -1;
     lastLoginAt = json['last_login_at'] ?? '';
     isEmailVerified = json['isEmailVerified'] ?? false;
     nis = json['nis'] ?? '';

@@ -14,7 +14,7 @@ class AttendanceRepository extends BaseRepository {
     bool recomended = false,
   }) async {
     final response = await fetch(kApiAttendanceList, queryParameters: {
-      'search': search,
+      'nis': search,
       'pageNumber': page,
       'pageSize': pageSize,
     });

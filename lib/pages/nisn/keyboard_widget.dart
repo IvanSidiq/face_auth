@@ -6,6 +6,7 @@ class _KeyboardWidget extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final cubit = context.read<KeyboardCubit>();
+    final sCubit = context.read<SearchCubit>();
 
     return VStack([
       // Gap(20),
@@ -25,15 +26,30 @@ class _KeyboardWidget extends HookWidget {
         listener: (context, state) {
           if (state is AddNum) {
             cubit.keyController = cubit.keyController + state.num;
+            if (sCubit.isOnDelay) {
+              sCubit.addDelay(cubit.keyController);
+            } else {
+              sCubit.init(cubit.keyController);
+            }
           }
           if (state is ReduceNum) {
             if (cubit.keyController.isNotEmpty) {
               cubit.keyController = cubit.keyController
                   .substring(0, cubit.keyController.length - 1);
+              if (sCubit.isOnDelay) {
+                sCubit.addDelay(cubit.keyController);
+              } else {
+                sCubit.init(cubit.keyController);
+              }
             }
           }
           if (state is ClearAll) {
             cubit.keyController = '';
+            if (sCubit.isOnDelay) {
+              sCubit.addDelay(cubit.keyController);
+            } else {
+              sCubit.init(cubit.keyController);
+            }
           }
         },
         builder: (context, state) {

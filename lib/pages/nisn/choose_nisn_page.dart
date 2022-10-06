@@ -3,9 +3,9 @@ import 'package:face_auth/models/attendance.dart';
 import 'package:face_auth/pages/nisn/cubit/attendance_cubit.dart';
 import 'package:face_auth/pages/nisn/cubit/logout_cubit.dart';
 import 'package:face_auth/pages/nisn/cubit/school_profile_cubit.dart';
+import 'package:face_auth/pages/nisn/cubit/search_cubit.dart';
 import 'package:face_auth/services/navigation_service.dart';
 import 'package:face_auth/utils/colors.dart';
-import 'package:face_auth/utils/customs/custom_dialog.dart';
 import 'package:face_auth/utils/customs/custom_text_style.dart';
 import 'package:face_auth/widgets/custom_loading_widget.dart';
 import 'package:flutter/material.dart';
@@ -42,7 +42,10 @@ class ChooseNisnPage extends StatelessWidget {
         ),
         BlocProvider(
           create: (context) => LogoutCubit(),
-        )
+        ),
+        BlocProvider(
+          create: (context) => SearchCubit(),
+        ),
       ],
       child: const _ChooseNisnPage(),
     );
@@ -94,7 +97,6 @@ class _ChooseNisnPage extends HookWidget {
                       if (state is ClickedCounts) {
                         if (lCubit.clickedCounts < 7) {
                           lCubit.clickedCounts = lCubit.clickedCounts + 1;
-                          print(lCubit.clickedCounts);
                         } else {
                           showDialog(
                               context: context,
@@ -292,7 +294,7 @@ class _ChooseNisnPage extends HookWidget {
                               });
                         }
                         if (state is AttendanceLoading) {
-                          return const CustomLoadingWidget().pOnly(top: 30);
+                          return const CustomLoadingWidget().pOnly(top: 80);
                         }
                         return Container();
                       },
@@ -309,7 +311,14 @@ class _ChooseNisnPage extends HookWidget {
                     .make()
                     .px(8)
                     .expand(),
-                const _KeyboardWidget(),
+                BlocListener<SearchCubit, SearchState>(
+                  listener: (context, state) {
+                    if (state is SearchDelay) {
+                      aCubit.initialLoad(search: state.search);
+                    }
+                  },
+                  child: const _KeyboardWidget(),
+                ),
                 const Gap(12),
                 HStack([
                   Icon(
