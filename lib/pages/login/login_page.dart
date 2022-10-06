@@ -7,8 +7,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:gap/gap.dart';
 import 'package:get/get.dart';
+import 'package:get_it/get_it.dart';
 import 'package:velocity_x/velocity_x.dart';
 
+import '../../services/navigation_service.dart';
 import '../../utils/colors.dart';
 import 'cubit/button_cubit.dart';
 
@@ -72,22 +74,32 @@ class _LoginPage extends HookWidget {
               BlocBuilder<LoginCubit, LoginState>(
                 builder: (context, state) {
                   if (state is LoginFailed) {
-                    return HStack([
-                      const Gap(2),
-                      Icon(
-                        Icons.error_outline,
-                        color: CustomColor.error,
-                        size: 20,
-                      ),
-                      Expanded(
-                        child: 'Email atau kata sandi yang Anda masukkan salah.'
-                            .text
-                            .color(CustomColor.error)
-                            .textStyle(CustomTextStyle.bodyMedium)
-                            .make()
-                            .pOnly(top: 4, left: 12),
-                      ),
-                    ]).pOnly(bottom: 8);
+                    return HStack(
+                      [
+                        const Gap(2),
+                        Icon(
+                          Icons.error_outline,
+                          color: CustomColor.error,
+                          size: 20,
+                        ),
+                        const Gap(12),
+                        Expanded(
+                          child:
+                              'Email atau kata sandi yang Anda masukkan salah.'
+                                  .text
+                                  .color(CustomColor.error)
+                                  .textStyle(CustomTextStyle.bodyMedium)
+                                  .make()
+                                  .pOnly(top: 4, right: 16),
+                        ),
+                      ],
+                      alignment: MainAxisAlignment.center,
+                      crossAlignment: CrossAxisAlignment.center,
+                    ).pOnly(bottom: 32);
+                  }
+                  if (state is LoginSuccess) {
+                    GetIt.I<NavigationServiceMain>()
+                        .pushReplacementNamed('/choose_nisn');
                   }
                   return const Gap(8);
                 },
@@ -177,8 +189,8 @@ class _LoginPage extends HookWidget {
                       ),
                       suffixIcon: Icon(
                         vCubit.obscureText
-                            ? Boxicons.bxs_show
-                            : Boxicons.bxs_hide,
+                            ? Boxicons.bx_show
+                            : Boxicons.bx_hide,
                         color: CustomColor.onSurfaceVariant,
                       ).onTap(() {
                         vCubit.obscureChange();
@@ -188,8 +200,8 @@ class _LoginPage extends HookWidget {
                   );
                 },
               ),
-            ]).px24(),
-            const SizedBox().expand(),
+              const Gap(24),
+            ]).px24().scrollVertical().expand(),
             BlocConsumer<ButtonCubit, ButtonState>(
               listener: (context, state) {
                 if (state is ChangeButtonState) {

@@ -20,7 +20,6 @@ class AuthRepository extends BaseRepository {
       GetIt.I<UserService>().setUser = user;
       GetIt.I<FlutterSecureStorage>()
           .write(key: '$faBpls-$faBplsUser', value: user.id);
-      GetIt.I<NavigationServiceMain>().pushReplacementNamed('/choose_nisn');
       return BaseResponse(
         statusCode: response.statusCode,
         data: user,
@@ -67,6 +66,18 @@ class AuthRepository extends BaseRepository {
       CustomToast.showToastSuccess('Logged out');
       GetIt.I<FlutterSecureStorage>().delete(key: '$faBpls-$faBplsUser');
       GetIt.I<NavigationServiceMain>().pushRemoveUntil('/login');
+      return response;
+    }
+
+    return response;
+  }
+
+  Future<BaseResponse> logoutFromLogin({required String password}) async {
+    final response =
+        await fetch(kApiLogout, queryParameters: {'password': password});
+
+    if (response.statusCode == 200) {
+      GetIt.I<FlutterSecureStorage>().delete(key: '$faBpls-$faBplsUser');
       return response;
     }
 
