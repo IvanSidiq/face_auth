@@ -31,10 +31,7 @@ class CameraCubit extends Cubit<CameraState> {
   Face? detectedFace;
   Size? imageSize;
   List? tfliteData;
-
-  String? savedUser;
-  List? userSavedFaceData;
-  String? userSavedPath;
+  List<double>? faceVector;
 
   bool isInitialized = false;
   String? imagePath;
@@ -50,6 +47,8 @@ class CameraCubit extends Cubit<CameraState> {
   double similarity = 0.0;
   double minkowskiDist = 0.0;
 
+  int faceCounter = 0;
+
   String message = 'Wajah tidak ditemukan';
   String message2 =
       'Posisikan wajah anda agar dapat terpindai oleh kamera dan pastikan anda melepas masker';
@@ -57,7 +56,7 @@ class CameraCubit extends Cubit<CameraState> {
   Future<void> initCamera() async {
     await cameraService.initialize();
     initializeFaceDetector();
-    // await streamFaceReader();
+    await streamFaceReader();
     await initializeInterpreter();
     croppedPath = '${(await getTemporaryDirectory()).path}/cropped_face.jpg';
     emit(CameraInitialized());
@@ -187,24 +186,6 @@ class CameraCubit extends Cubit<CameraState> {
     });
   }
 
-  Future<void> saveData(List tfliteData, String user) async {
-    userSavedFaceData = tfliteData;
-    savedUser = user;
-    String croppedPath =
-        '${(await getTemporaryDirectory()).path}/cropped_face.jpg';
-    String savedPath = '${(await getTemporaryDirectory()).path}/saved_face.jpg';
-    userSavedPath = savedPath;
-    await File(croppedPath).copy(savedPath);
-    // DatabaseHelper databaseHelper = DatabaseHelper.instance;
-    // List predictedData = List.from(tfliteData);
-    // User userToSave = User(
-    //   user: user,
-    //   modelData: predictedData,
-    // );
-    // await databaseHelper.insert(userToSave);
-    emit(DataSaved());
-  }
-
   Future<void> calculateDist() async {
     // DatabaseHelper _dbHelper = DatabaseHelper.instance;
 
@@ -213,12 +194,14 @@ class CameraCubit extends Cubit<CameraState> {
     // double threshold = 0.5;
     // User? predictedResult;
 
-    double currDistC = _euclideanDistance(userSavedFaceData, tfliteData);
+    double currDistC = _euclideanDistance(faceVector, tfliteData);
     currDistC = 1 / (1 + currDistC);
-    final similarityC = _cosineSimilarity(userSavedFaceData, tfliteData);
-    double minkowskiDistC =
-        _minkowskiDistance(userSavedFaceData, tfliteData, 4);
+    final similarityC = _cosineSimilarity(faceVector, tfliteData);
+    double minkowskiDistC = _minkowskiDistance(faceVector, tfliteData, 4);
     minkowskiDistC = 1 / (1 + minkowskiDistC);
+
+    print('similarity C');
+    print(similarityC);
     // print(currDist);
     // if (currDistC <= threshold && currDistC < minDist) {
     //   minDist = currDistC;
@@ -248,8 +231,12 @@ class CameraCubit extends Cubit<CameraState> {
   // }
 
   double _cosineSimilarity(List? a, List? b) {
-    if (a == null || b == null) throw Exception("Null argument");
+    if (a == null || b == null) {
+      emit(CalculateDistanceError());
+      throw Exception("Null argument");
+    }
     if (a.length != b.length) {
+      emit(CalculateDistanceError());
       throw Exception('Vectors must be of the same length');
     }
     double dotProduct = 0.0;

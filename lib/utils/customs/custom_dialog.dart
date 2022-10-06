@@ -47,9 +47,11 @@ class CustomDialog {
     required VoidCallback onClick,
     required double animationWidth,
     required String animationKey,
+    bool barrierDismissible = false,
   }) {
     showDialog(
         context: context,
+        barrierDismissible: barrierDismissible,
         builder: (context) {
           return CustomAnimationDialogWidget(
             title: title,
@@ -72,9 +74,11 @@ class CustomDialog {
     VoidCallback? onClick2,
     required double imageWidth,
     required String imageKey,
+    bool barrierDismissible = false,
   }) {
     showDialog(
         context: context,
+        barrierDismissible: barrierDismissible,
         builder: (context) {
           return CustomImageWidget(
             title: title,

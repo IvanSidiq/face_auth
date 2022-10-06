@@ -81,28 +81,10 @@ class _CameraPage extends HookWidget {
                         cubit.message2 =
                             'Posisikan wajah anda agar dapat terpindai oleh kamera dan pastikan anda melepas masker';
                         cubit.tfliteData = state.data;
-                        if (cubit.savedUser != null) {
+                        if (cubit.tfliteData != null &&
+                            cubit.faceVector != null) {
                           cubit.calculateDist();
                         }
-
-                        CustomDialog.showAnimationDialog(context,
-                            title: 'Verifikasi berhasil',
-                            body:
-                                'Verifikasi wajah anda berhasil, terimakasih sudah melakukan absensi hari ini',
-                            buttonText: 'Kembali ke halaman utama',
-                            onClick: () {
-                          GetIt.I<NavigationServiceMain>().pop();
-                          //Change to next shit
-                          if (cubit.timer == null) {
-                            cubit.streamFaceReader();
-                          } else {
-                            if (!cubit.timer!.isActive)
-                              cubit.streamFaceReader();
-                          }
-                        },
-                            animationWidth: 260,
-                            animationKey:
-                                'assets/animations/check_animation.json');
                       }
                       if (state is CameraInitialized) {
                         cubit.isInitialized = true;
@@ -136,6 +118,77 @@ class _CameraPage extends HookWidget {
                           cubit.captTimer!.cancel();
                           cubit.captValue = 0;
                           cubit.processImage(realProcess: true);
+                        }
+                      }
+                      if (state is CalculateDistance) {
+                        if (state.similarity < tCubit.threshold) {
+                          if (cubit.faceCounter < 2) {
+                            CustomDialog.showImageDialog(
+                              context,
+                              barrierDismissible: true,
+                              title: 'Pemindaian gagal',
+                              body:
+                                  'Pemindaian wajah gagal. Anda memiliki ${2 - cubit.faceCounter} kesempatan tersisa untuk melakukan verifikasi wajah',
+                              buttonText: 'Pindai Ulang',
+                              onClick: () {
+                                GetIt.I<NavigationServiceMain>().pop();
+                                if (cubit.timer == null) {
+                                  cubit.streamFaceReader();
+                                } else {
+                                  if (!cubit.timer!.isActive) {
+                                    cubit.streamFaceReader();
+                                  }
+                                }
+                              },
+                              imageWidth: 120,
+                              imageKey: 'assets/images/scan_failed.png',
+                            );
+
+                            cubit.faceCounter = cubit.faceCounter + 1;
+                          } else {
+                            CustomDialog.showImageDialog(
+                              context,
+                              barrierDismissible: true,
+                              title: 'Verifikasi gagal',
+                              body:
+                                  'Anda telah 3 kali gagal melakukan verifikasi wajah. Gambar wajah terakhir akan dikirimkan sebagai bukti presensi.',
+                              buttonText: 'Kembali ke halaman utama',
+                              onClick: () {
+                                GetIt.I<NavigationServiceMain>().pop();
+                                GetIt.I<NavigationServiceMain>().pop();
+                              },
+                              imageWidth: 120,
+                              imageKey: 'assets/images/scan_failed.png',
+                            );
+
+                            cubit.faceCounter = cubit.faceCounter + 1;
+                          }
+                          // ulang
+                        } else {
+                          // sukses
+                          CustomDialog.showAnimationDialog(
+                            context,
+                            barrierDismissible: true,
+                            title: 'Verifikasi berhasil',
+                            body:
+                                'Verifikasi wajah anda berhasil, terimakasih sudah melakukan absensi hari ini',
+                            buttonText: 'Kembali ke halaman utama',
+                            onClick: () {
+                              GetIt.I<NavigationServiceMain>().pop();
+                              GetIt.I<NavigationServiceMain>().pop();
+                              //Change to next shit
+                              // if (cubit.timer == null) {
+                              //   cubit.streamFaceReader();
+                              // } else {
+                              //   if (!cubit.timer!.isActive) {
+                              //     cubit.streamFaceReader();
+                              //   }
+                              // }
+                            },
+                            animationWidth: 260,
+                            animationKey:
+                                'assets/animations/check_animation.json',
+                          );
                         }
                       }
                     },
@@ -277,6 +330,7 @@ class _CameraPage extends HookWidget {
                         if (state is GetAttendanceFaceDataSuccess) {
                           if (state.face.vector != null) {
                             fCubit.faceVector = state.face.vector!;
+                            cubit.faceVector = state.face.vector!;
                             // print(fCubit.faceVector);
                           }
                         }

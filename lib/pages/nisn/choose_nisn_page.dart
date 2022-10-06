@@ -1,9 +1,11 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:face_auth/models/attendance.dart';
 import 'package:face_auth/pages/nisn/cubit/attendance_cubit.dart';
+import 'package:face_auth/pages/nisn/cubit/logout_cubit.dart';
 import 'package:face_auth/pages/nisn/cubit/school_profile_cubit.dart';
 import 'package:face_auth/services/navigation_service.dart';
 import 'package:face_auth/utils/colors.dart';
+import 'package:face_auth/utils/customs/custom_dialog.dart';
 import 'package:face_auth/utils/customs/custom_text_style.dart';
 import 'package:face_auth/widgets/custom_loading_widget.dart';
 import 'package:flutter/material.dart';
@@ -18,6 +20,7 @@ import 'package:velocity_x/velocity_x.dart';
 import '../../helper/hooks/scroll_controller_hook.dart';
 import '../../utils/function.dart';
 import 'cubit/keyboard_cubit.dart';
+import 'custom_image_dialog2_widget.dart';
 
 part 'keyboard_widget.dart';
 
@@ -36,6 +39,9 @@ class ChooseNisnPage extends StatelessWidget {
         ),
         BlocProvider(
           create: (context) => KeyboardCubit(),
+        ),
+        BlocProvider(
+          create: (context) => LogoutCubit(),
         )
       ],
       child: const _ChooseNisnPage(),
@@ -51,6 +57,9 @@ class _ChooseNisnPage extends HookWidget {
     final cubit = context.read<SchoolProfileCubit>();
     final aCubit = context.read<AttendanceCubit>();
     final kCubit = context.read<KeyboardCubit>();
+    final lCubit = context.read<LogoutCubit>();
+
+    final passwordC = useTextEditingController();
 
     useEffect(() {
       cubit.getSchoolProfile();
@@ -77,30 +86,75 @@ class _ChooseNisnPage extends HookWidget {
           },
           builder: (context, state) {
             if (state is GetSchoolProfileSuccess) {
+              final logo = state.school.logo;
               return VStack([
                 HStack([
-                  CachedNetworkImage(
-                    imageUrl: getImage(state.school.logo),
-                    imageBuilder: (context, image) {
-                      return VxBox()
-                          .bgImage(DecorationImage(
-                              image: image, fit: BoxFit.contain))
-                          .height(24)
-                          .width(24)
-                          .color(Colors.transparent)
-                          .make();
+                  BlocListener<LogoutCubit, LogoutState>(
+                    listener: (context, state) {
+                      if (state is ClickedCounts) {
+                        if (lCubit.clickedCounts < 7) {
+                          lCubit.clickedCounts = lCubit.clickedCounts + 1;
+                          print(lCubit.clickedCounts);
+                        } else {
+                          showDialog(
+                              context: context,
+                              barrierDismissible: true,
+                              builder: (context) {
+                                return CustomImage2Widget(
+                                    title: 'Keluar dari aplikasi',
+                                    body:
+                                        'Anda perlu melakukan login kembali untuk dapat menggunakan aplikasi presensi pada perangkat ini',
+                                    buttonText: 'Lanjutkan',
+                                    onClick: () {
+                                      showDialog(
+                                          context: context,
+                                          barrierDismissible: true,
+                                          builder: (context) {
+                                            return CustomImage3Widget(
+                                                title: 'Keluar dari aplikasi',
+                                                body:
+                                                    'Masukkan kata sandi untuk keluar dari aplikasi presensi pada perangkat ini',
+                                                buttonText: 'Logout',
+                                                controller: passwordC,
+                                                onClick: () {
+                                                  lCubit.logout(passwordC.text);
+                                                },
+                                                imageWidth: 120,
+                                                imageKey:
+                                                    'assets/images/logout.png');
+                                          });
+                                    },
+                                    imageWidth: 120,
+                                    imageKey: 'assets/images/logout.png');
+                              });
+                        }
+                      }
                     },
-                    errorWidget: (context, url, error) {
-                      return Icon(
-                        Boxicons.bx_image_alt,
-                        size: 24,
-                        color: CustomColor.onSurfaceVariant.withOpacity(0.38),
-                      ).centered();
-                    },
-                    placeholder: (context, url) {
-                      return const SizedBox(width: 24, height: 24);
-                    },
-                  ),
+                    child: CachedNetworkImage(
+                      imageUrl: getImage(logo),
+                      imageBuilder: (context, image) {
+                        return VxBox()
+                            .bgImage(DecorationImage(
+                                image: image, fit: BoxFit.contain))
+                            .height(24)
+                            .width(24)
+                            .color(Colors.transparent)
+                            .make();
+                      },
+                      errorWidget: (context, url, error) {
+                        return Icon(
+                          Boxicons.bx_image_alt,
+                          size: 24,
+                          color: CustomColor.onSurfaceVariant.withOpacity(0.38),
+                        ).centered();
+                      },
+                      placeholder: (context, url) {
+                        return const SizedBox(width: 24, height: 24);
+                      },
+                    ),
+                  ).onTap(() {
+                    lCubit.tryLogout();
+                  }),
                   state.school.name.text
                       .textStyle(CustomTextStyle.titleMedium)
                       .center

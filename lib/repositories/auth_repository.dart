@@ -59,8 +59,9 @@ class AuthRepository extends BaseRepository {
     return response;
   }
 
-  Future<BaseResponse> logout() async {
-    final response = await fetch(kApiLogout);
+  Future<BaseResponse> logout({required String password}) async {
+    final response =
+        await fetch(kApiLogout, queryParameters: {'password': password});
 
     if (response.statusCode == 200) {
       CustomToast.showToastSuccess('Logged out');

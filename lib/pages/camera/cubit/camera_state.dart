@@ -50,6 +50,8 @@ class CalculateDistance extends CameraState {
   CalculateDistance(this.dist, this.similarity, this.minkowski);
 }
 
+class CalculateDistanceError extends CameraState {}
+
 class DataSaved extends CameraState {}
 
 class CountTimerStart extends CameraState {}
