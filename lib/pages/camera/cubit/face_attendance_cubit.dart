@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
 
@@ -13,6 +15,8 @@ class FaceAttendanceCubit extends Cubit<FaceAttendanceState> {
   final _repo = AttendanceRepository();
   String name = '';
   String nis = '';
+  String attendanceId = '';
+  String dateId = '';
   List<double> faceVector = [];
 
   Future<void> getAttendanceData(String userId) async {
@@ -34,6 +38,27 @@ class FaceAttendanceCubit extends Cubit<FaceAttendanceState> {
       emit(GetAttendanceFaceDataSuccess(response.data));
     } else {
       emit(GetAttendanceFaceDataFailed());
+    }
+  }
+
+  Future<void> attendingAttendance({
+    required double similarityC,
+    required String attendanceId,
+    required String dateId,
+    required File faceFile,
+  }) async {
+    emit(AttendingAttendanceLoading());
+    final response = await _repo.postAttendanceAttend(
+      similarityC: similarityC,
+      attendanceId: attendanceId,
+      dateId: dateId,
+      faceFile: faceFile,
+    );
+
+    if (response.statusCode == 200) {
+      emit(AttendingAttendanceSuccess());
+    } else {
+      emit(AttendingAttendanceFailed());
     }
   }
 }

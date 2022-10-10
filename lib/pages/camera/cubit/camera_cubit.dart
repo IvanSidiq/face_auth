@@ -200,8 +200,6 @@ class CameraCubit extends Cubit<CameraState> {
     double minkowskiDistC = _minkowskiDistance(faceVector, tfliteData, 4);
     minkowskiDistC = 1 / (1 + minkowskiDistC);
 
-    print('similarity C');
-    print(similarityC);
     // print(currDist);
     // if (currDistC <= threshold && currDistC < minDist) {
     //   minDist = currDistC;

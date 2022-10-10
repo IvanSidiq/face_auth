@@ -63,3 +63,5 @@ String kApiDistrict =
 String kApiAttendanceList = '$kApiSekoteng/attendances';
 String kApiAttendanceStudentData = '$kApiSekoteng/attendances/students';
 String kApiAttendanceStudentFace = '$kApiSekoteng/face-vector';
+String kApiAttendanceAttend = '$kApiSekoteng/attendances';
+String kApiAttendanceUploadFileUrl = '$kApiNogosari/uploads/signed-url-upload';

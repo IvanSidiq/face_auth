@@ -24,3 +24,9 @@ class GetAttendanceFaceDataSuccess extends FaceAttendanceState {
 class GetAttendanceFaceDataLoading extends FaceAttendanceState {}
 
 class GetAttendanceFaceDataFailed extends FaceAttendanceState {}
+
+class AttendingAttendanceSuccess extends FaceAttendanceState {}
+
+class AttendingAttendanceLoading extends FaceAttendanceState {}
+
+class AttendingAttendanceFailed extends FaceAttendanceState {}

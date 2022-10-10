@@ -30,3 +30,19 @@ class AttendanceFace {
     return data;
   }
 }
+
+class AttendanceUrl {
+  String? signedUrl;
+
+  AttendanceUrl({this.signedUrl});
+
+  AttendanceUrl.fromJson(Map<String, dynamic> json) {
+    signedUrl = json['signedUrl'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['signedUrl'] = signedUrl;
+    return data;
+  }
+}

@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:face_auth/pages/camera/cubit/face_attendance_cubit.dart';
 import 'package:face_auth/pages/camera/cubit/remote_config_cubit.dart';
 import 'package:face_auth/services/navigation_service.dart';
@@ -146,6 +148,12 @@ class _CameraPage extends HookWidget {
 
                             cubit.faceCounter = cubit.faceCounter + 1;
                           } else {
+                            fCubit.attendingAttendance(
+                              similarityC: state.dist,
+                              attendanceId: fCubit.attendanceId,
+                              dateId: fCubit.dateId,
+                              faceFile: File(cubit.croppedPath),
+                            );
                             CustomDialog.showImageDialog(
                               context,
                               barrierDismissible: true,
@@ -166,6 +174,12 @@ class _CameraPage extends HookWidget {
                           // ulang
                         } else {
                           // sukses
+                          fCubit.attendingAttendance(
+                            similarityC: state.dist,
+                            attendanceId: fCubit.attendanceId,
+                            dateId: fCubit.dateId,
+                            faceFile: File(cubit.croppedPath),
+                          );
                           CustomDialog.showAnimationDialog(
                             context,
                             barrierDismissible: true,
@@ -324,6 +338,8 @@ class _CameraPage extends HookWidget {
                         if (state is GetAttendanceDataSuccess) {
                           fCubit.name = state.attendance.name;
                           fCubit.nis = state.attendance.nis;
+                          fCubit.attendanceId = state.attendance.id;
+                          fCubit.dateId = state.attendance.dateId;
                           // print(fCubit.name);
                           // print(fCubit.nis);
                         }
@@ -331,7 +347,6 @@ class _CameraPage extends HookWidget {
                           if (state.face.vector != null) {
                             fCubit.faceVector = state.face.vector!;
                             cubit.faceVector = state.face.vector!;
-                            // print(fCubit.faceVector);
                           }
                         }
                         if (state is GetAttendanceDataFailed) {

@@ -109,6 +109,28 @@ class BaseRepository {
     }
   }
 
+  Future<BaseResponse> putFile(String api, Map<String, dynamic>? headers,
+      {required File data, Map<String, dynamic>? queryParameters}) async {
+    try {
+      final response = await retry(
+        () => dio.put(
+          api,
+          data: data.readAsBytesSync(),
+          queryParameters: queryParameters,
+          options: Options(headers: headers),
+        ),
+        retryIf: (e) => e is SocketException || e is TimeoutException,
+      );
+
+      return BaseResponse(
+        statusCode: response.statusCode,
+        data: response.data,
+      );
+    } on DioError catch (e) {
+      return ExceptionHelper(e).catchException();
+    }
+  }
+
   Future<BaseResponse> delete(String api, Map<String, dynamic>? headers,
       {Map<String, dynamic>? data,
       Map<String, dynamic>? queryParameters}) async {
