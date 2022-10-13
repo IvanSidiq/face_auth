@@ -1,9 +1,11 @@
 import 'dart:io';
 
+import 'package:boxicons/boxicons.dart';
 import 'package:face_auth/pages/camera/cubit/face_attendance_cubit.dart';
 import 'package:face_auth/pages/camera/cubit/remote_config_cubit.dart';
 import 'package:face_auth/services/navigation_service.dart';
 import 'package:face_auth/utils/customs/custom_dialog.dart';
+import 'package:face_auth/utils/customs/custom_toast.dart';
 import 'package:face_auth/widgets/camera_widget.dart';
 import 'package:face_auth/widgets/custom_loading_widget.dart';
 import 'package:flutter/material.dart';
@@ -79,6 +81,7 @@ class _CameraPage extends HookWidget {
                   BlocConsumer<CameraCubit, CameraState>(
                     listener: (context, state) {
                       if (state is TfliteDataSuccess) {
+                        cubit.withErrorCircle = true;
                         cubit.message = 'Wajah tidak ditemukan';
                         cubit.message2 =
                             'Posisikan wajah anda agar dapat terpindai oleh kamera dan pastikan anda melepas masker';
@@ -93,6 +96,8 @@ class _CameraPage extends HookWidget {
                       }
                       if (state is ImageProcessed) {
                         cubit.imagePath = state.croppedPath;
+                        cubit.detectedFacePaint = cubit.detectedFace;
+                        cubit.withErrorCircle = false;
                         cubit.message = 'Proses pemindaian wajah..';
                         cubit.message2 =
                             'Pertahankan posisi wajah anda hingga waktu pemindaian berakhir';
@@ -101,11 +106,15 @@ class _CameraPage extends HookWidget {
                         cubit.interpreter = state.interpreter;
                       }
                       if (state is NoFaceDetected) {
+                        cubit.detectedFacePaint = null;
+                        cubit.withErrorCircle = true;
                         cubit.message = 'Wajah tidak ditemukan';
                         cubit.message2 =
                             'Posisikan wajah anda agar dapat terpindai oleh kamera dan pastikan anda melepas masker';
                       }
                       if (state is FaceDetectedBut) {
+                        cubit.detectedFacePaint = cubit.detectedFace;
+                        cubit.withErrorCircle = true;
                         cubit.message = state.message;
                         cubit.message2 = state.message2;
                         if (cubit.timer == null) {
@@ -209,50 +218,56 @@ class _CameraPage extends HookWidget {
                     builder: (context, state) {
                       final size = Get.size;
                       final deviceRatio = size.width / size.height;
-                      return SizedBox(
-                        width: size.width,
-                        height: size.width * 16 / 9,
-                        child: Stack(
-                          fit: StackFit.expand,
-                          children: [
-                            CameraWidget(
-                              cameraService: cubit.cameraService,
-                              isCameraInitialized: cubit.isInitialized,
-                              deviceRatio: deviceRatio,
-                            ),
-                            BlocBuilder<CameraCubit, CameraState>(
-                              builder: (context, state) {
-                                if (state is ImageProcessed) {
-                                  if (cubit.detectedFace == null) {
-                                    return Container();
-                                  }
-                                  return CustomPaint(
-                                    painter: FacePainter(
-                                        face: cubit.detectedFace!,
-                                        imageSize: Size(
-                                            MediaQuery.of(context).size.width +
-                                                90,
-                                            (MediaQuery.of(context)
-                                                        .size
-                                                        .height *
-                                                    4 /
-                                                    5) +
-                                                40)),
-                                  );
-                                }
-                                return Container();
-                              },
-                            ),
-                          ],
-                        ),
+                      return CameraWidget(
+                        cameraService: cubit.cameraService,
+                        isCameraInitialized: cubit.isInitialized,
+                        deviceRatio: deviceRatio,
                       );
+                      // BlocBuilder<CameraCubit, CameraState>(
+                      //   builder: (context, state) {
+                      //     if (cubit.detectedFacePaint == null) {
+                      //       return Container(
+                      //         width: 50,
+                      //         height: 50,
+                      //         color: CustomColor.primary,
+                      //       );
+                      //     } else {
+                      //       return CustomPaint(
+                      //         painter: FacePainter(
+                      //           face: cubit.detectedFacePaint!,
+                      //           imageSize: Size(
+                      //             MediaQuery.of(context).size.width,
+                      //             (MediaQuery.of(context).size.height),
+                      //           ),
+                      //         ),
+                      //       );
+                      //     }
+                      //     return Container();
+                      //   },
+                      // ),
                     },
                   ),
+                  Positioned(
+                      top: 0,
+                      child: Column(
+                        children: [
+                          Container(
+                            color: CustomColor.surface,
+                            width: Get.width,
+                            height: 68,
+                          ),
+                          Gap(Get.width),
+                          Container(
+                            color: CustomColor.surface,
+                            width: Get.width,
+                            height: Get.height,
+                          ),
+                        ],
+                      )),
                   ColorFiltered(
                     colorFilter: ColorFilter.mode(Colors.black.withOpacity(0.6),
                         BlendMode.srcOut), // This one will create the magic
                     child: Stack(
-                      fit: StackFit.expand,
                       children: [
                         Container(
                           decoration: const BoxDecoration(
@@ -263,7 +278,7 @@ class _CameraPage extends HookWidget {
                         Align(
                           alignment: Alignment.topCenter,
                           child: Container(
-                            margin: const EdgeInsets.only(top: 80),
+                            margin: const EdgeInsets.only(top: 100),
                             height: Get.width - 64,
                             width: Get.width - 64,
                             decoration: BoxDecoration(
@@ -275,23 +290,68 @@ class _CameraPage extends HookWidget {
                       ],
                     ),
                   ),
+                  // Positioned(
+                  //     top: 95,
+                  //     left: 60,
+                  //     child: Container(
+                  //       color: CustomColor.primary,
+                  //       width: 100,
+                  //       height: 105,
+                  //     )),
                   Positioned(
                     top: 0,
                     child: VStack(
                       [
                         const Gap(32),
-                        'Verifikasi Wajah'
-                            .text
-                            .textStyle(CustomTextStyle.titleLarge)
-                            .color(Colors.white)
-                            .make(),
+                        HStack([
+                          const Gap(24),
+                          Icon(
+                            Boxicons.bx_x,
+                            size: 24,
+                            color: CustomColor.onSurface,
+                          )
+                              .p(6)
+                              .box
+                              .border(color: CustomColor.onSurface, width: 2)
+                              .withRounded(value: 12)
+                              .make(),
+                          'Verifikasi Wajah'
+                              .text
+                              .textStyle(CustomTextStyle.titleLarge)
+                              .color(Colors.white)
+                              .makeCentered()
+                              .expand(),
+                          const Icon(
+                            Boxicons.bx_x,
+                            size: 24,
+                            color: Colors.transparent,
+                          )
+                              .box
+                              .p8
+                              .border(color: Colors.transparent, width: 2)
+                              .withRounded(value: 12)
+                              .make(),
+                          const Gap(24),
+                        ]),
                         const Gap(430),
                         BlocBuilder<CameraCubit, CameraState>(
                           builder: (context, state) {
-                            return cubit.message.text
-                                .textStyle(CustomTextStyle.labelLarge)
-                                .white
-                                .make();
+                            return HStack([
+                              cubit.withErrorCircle
+                                  ? Icon(
+                                      Boxicons.bx_error_circle,
+                                      size: 20,
+                                      color: CustomColor.onSurface,
+                                    )
+                                  : Container(),
+                              cubit.withErrorCircle
+                                  ? const Gap(8)
+                                  : Container(),
+                              cubit.message.text
+                                  .textStyle(CustomTextStyle.labelLarge)
+                                  .color(CustomColor.onSurface)
+                                  .make()
+                            ]);
                           },
                         ),
                         const Gap(112),
@@ -309,7 +369,23 @@ class _CameraPage extends HookWidget {
                     ).w(Get.width),
                   ),
                   Positioned(
-                    top: 80,
+                    top: 100,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        VxBox()
+                            .border(
+                                color: CustomColor.onSurface.withOpacity(0.5),
+                                width: 2)
+                            .withRounded(value: Get.width - 64)
+                            .width(Get.width - 64)
+                            .height(Get.width - 64)
+                            .make(),
+                      ],
+                    ).w(Get.width),
+                  ),
+                  Positioned(
+                    top: 103,
                     child: BlocBuilder<CameraCubit, CameraState>(
                       builder: (context, state) {
                         if (cubit.captValue != 0) {
@@ -317,11 +393,13 @@ class _CameraPage extends HookWidget {
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
                               CircularProgressIndicator(
+                                strokeWidth: 6,
                                 value: cubit.captValue,
+                                color: CustomColor.onSurface,
                               )
                                   .box
-                                  .width(Get.width - 65)
-                                  .height(Get.width - 64)
+                                  .width(Get.width - 70)
+                                  .height(Get.width - 70)
                                   .make(),
                             ],
                           ).w(Get.width);

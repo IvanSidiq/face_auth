@@ -48,6 +48,7 @@ class FaceAttendanceCubit extends Cubit<FaceAttendanceState> {
     required File faceFile,
   }) async {
     emit(AttendingAttendanceLoading());
+
     final response = await _repo.postAttendanceAttend(
       similarityC: similarityC,
       attendanceId: attendanceId,

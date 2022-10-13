@@ -29,6 +29,7 @@ class CameraCubit extends Cubit<CameraState> {
 
   late FaceDetector faceDetector;
   Face? detectedFace;
+  Face? detectedFacePaint;
   Size? imageSize;
   List? tfliteData;
   List<double>? faceVector;
@@ -52,6 +53,7 @@ class CameraCubit extends Cubit<CameraState> {
   String message = 'Wajah tidak ditemukan';
   String message2 =
       'Posisikan wajah anda agar dapat terpindai oleh kamera dan pastikan anda melepas masker';
+  bool withErrorCircle = true;
 
   Future<void> initCamera() async {
     await cameraService.initialize();
@@ -122,16 +124,16 @@ class CameraCubit extends Cubit<CameraState> {
       double h = detectedFace!.boundingBox.height + 10;
       double w = detectedFace!.boundingBox.width + 10;
 
-      if (h < 270 || w < 210) {
-        // face detected but not close enough
-        emit(FaceDetectedBut(
-            message: 'Wajah terlalu jauh',
-            message2:
-                'Posisikan wajah anda agar dapat terpindai oleh kamera dan pastikan anda melepas masker'));
-      } else if (!((y < 180 && y > 75) && (x < 160 && x > 60))) {
+      if (!((y < 200 && y > 95) && (x < 160 && x > 60))) {
         // face detected but not inside the circle
         emit(FaceDetectedBut(
             message: 'Mohon letakkan wajah di dalam lingkaran',
+            message2:
+                'Posisikan wajah anda agar dapat terpindai oleh kamera dan pastikan anda melepas masker'));
+      } else if (h < 270 || w < 210) {
+        // face detected but not close enough
+        emit(FaceDetectedBut(
+            message: 'Wajah terlalu jauh',
             message2:
                 'Posisikan wajah anda agar dapat terpindai oleh kamera dan pastikan anda melepas masker'));
       } else {
@@ -194,10 +196,10 @@ class CameraCubit extends Cubit<CameraState> {
     // double threshold = 0.5;
     // User? predictedResult;
 
-    double currDistC = _euclideanDistance(faceVector, tfliteData);
-    currDistC = 1 / (1 + currDistC);
-    final similarityC = _cosineSimilarity(faceVector, tfliteData);
-    double minkowskiDistC = _minkowskiDistance(faceVector, tfliteData, 4);
+    double euclC = _euclideanDistance(faceVector, tfliteData) * 100;
+    euclC = 1 / (1 + euclC);
+    final similarityC = _cosineSimilarity(faceVector, tfliteData) * 100;
+    double minkowskiDistC = _minkowskiDistance(faceVector, tfliteData, 4) * 100;
     minkowskiDistC = 1 / (1 + minkowskiDistC);
 
     // print(currDist);
@@ -205,7 +207,7 @@ class CameraCubit extends Cubit<CameraState> {
     //   minDist = currDistC;
     // }
 
-    emit(CalculateDistance(currDistC, similarityC, minkowskiDistC));
+    emit(CalculateDistance(similarityC, euclC, minkowskiDistC));
 
     // for (User u in users) {
     //   currDist = _euclideanDistance(u.modelData, predictedData);
