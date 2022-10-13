@@ -100,11 +100,7 @@ class AttendanceRepository extends BaseRepository {
     });
 
     if (response.statusCode == 200) {
-      final AttendanceFace data = AttendanceFace.fromJson(response.data);
-      return BaseResponse(
-        statusCode: response.statusCode,
-        data: data,
-      );
+      return response;
     }
     return response;
   }

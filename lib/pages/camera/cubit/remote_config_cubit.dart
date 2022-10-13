@@ -11,7 +11,7 @@ class RemoteConfigCubit extends Cubit<RemoteConfigState> {
   RemoteConfigCubit() : super(RemoteConfigInitial());
 
   final _repo = RemoteConfigRepository();
-  double threshold = 0.5;
+  double threshold = 50;
 
   Future<void> initGetThreshold() async {
     await GetIt.I<FirebaseRemoteConfig>()

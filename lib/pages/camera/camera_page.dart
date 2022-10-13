@@ -5,7 +5,6 @@ import 'package:face_auth/pages/camera/cubit/face_attendance_cubit.dart';
 import 'package:face_auth/pages/camera/cubit/remote_config_cubit.dart';
 import 'package:face_auth/services/navigation_service.dart';
 import 'package:face_auth/utils/customs/custom_dialog.dart';
-import 'package:face_auth/utils/customs/custom_toast.dart';
 import 'package:face_auth/widgets/camera_widget.dart';
 import 'package:face_auth/widgets/custom_loading_widget.dart';
 import 'package:flutter/material.dart';
@@ -18,8 +17,9 @@ import 'package:velocity_x/velocity_x.dart';
 
 import '../../utils/colors.dart';
 import '../../utils/customs/custom_text_style.dart';
-import '../../widgets/face_painter.dart';
 import 'cubit/camera_cubit.dart';
+
+part 'camera_widget.dart';
 
 class CameraPage extends StatelessWidget {
   const CameraPage({Key? key, required this.userId}) : super(key: key);
@@ -78,175 +78,7 @@ class _CameraPage extends HookWidget {
             child: Material(
               child: Stack(
                 children: [
-                  BlocConsumer<CameraCubit, CameraState>(
-                    listener: (context, state) {
-                      if (state is TfliteDataSuccess) {
-                        cubit.withErrorCircle = true;
-                        cubit.message = 'Wajah tidak ditemukan';
-                        cubit.message2 =
-                            'Posisikan wajah anda agar dapat terpindai oleh kamera dan pastikan anda melepas masker';
-                        cubit.tfliteData = state.data;
-                        if (cubit.tfliteData != null &&
-                            cubit.faceVector != null) {
-                          cubit.calculateDist();
-                        }
-                      }
-                      if (state is CameraInitialized) {
-                        cubit.isInitialized = true;
-                      }
-                      if (state is ImageProcessed) {
-                        cubit.imagePath = state.croppedPath;
-                        cubit.detectedFacePaint = cubit.detectedFace;
-                        cubit.withErrorCircle = false;
-                        cubit.message = 'Proses pemindaian wajah..';
-                        cubit.message2 =
-                            'Pertahankan posisi wajah anda hingga waktu pemindaian berakhir';
-                      }
-                      if (state is InitializeInterpreterSuccess) {
-                        cubit.interpreter = state.interpreter;
-                      }
-                      if (state is NoFaceDetected) {
-                        cubit.detectedFacePaint = null;
-                        cubit.withErrorCircle = true;
-                        cubit.message = 'Wajah tidak ditemukan';
-                        cubit.message2 =
-                            'Posisikan wajah anda agar dapat terpindai oleh kamera dan pastikan anda melepas masker';
-                      }
-                      if (state is FaceDetectedBut) {
-                        cubit.detectedFacePaint = cubit.detectedFace;
-                        cubit.withErrorCircle = true;
-                        cubit.message = state.message;
-                        cubit.message2 = state.message2;
-                        if (cubit.timer == null) {
-                          cubit.streamFaceReader();
-                        } else {
-                          if (!cubit.timer!.isActive) cubit.streamFaceReader();
-                        }
-                      }
-                      if (state is ChangeCaptTimerValue) {
-                        cubit.captValue = state.captValue;
-                        if (cubit.captValue >= 1) {
-                          cubit.captTimer!.cancel();
-                          cubit.captValue = 0;
-                          cubit.processImage(realProcess: true);
-                        }
-                      }
-                      if (state is CalculateDistance) {
-                        if (state.similarity < tCubit.threshold) {
-                          if (cubit.faceCounter < 2) {
-                            CustomDialog.showImageDialog(
-                              context,
-                              barrierDismissible: true,
-                              title: 'Pemindaian gagal',
-                              body:
-                                  'Pemindaian wajah gagal. Anda memiliki ${2 - cubit.faceCounter} kesempatan tersisa untuk melakukan verifikasi wajah',
-                              buttonText: 'Pindai Ulang',
-                              onClick: () {
-                                GetIt.I<NavigationServiceMain>().pop();
-                                if (cubit.timer == null) {
-                                  cubit.streamFaceReader();
-                                } else {
-                                  if (!cubit.timer!.isActive) {
-                                    cubit.streamFaceReader();
-                                  }
-                                }
-                              },
-                              imageWidth: 120,
-                              imageKey: 'assets/images/scan_failed.png',
-                            );
-
-                            cubit.faceCounter = cubit.faceCounter + 1;
-                          } else {
-                            fCubit.attendingAttendance(
-                              similarityC: state.dist,
-                              attendanceId: fCubit.attendanceId,
-                              dateId: fCubit.dateId,
-                              faceFile: File(cubit.croppedPath),
-                            );
-                            CustomDialog.showImageDialog(
-                              context,
-                              barrierDismissible: true,
-                              title: 'Verifikasi gagal',
-                              body:
-                                  'Anda telah 3 kali gagal melakukan verifikasi wajah. Gambar wajah terakhir akan dikirimkan sebagai bukti presensi.',
-                              buttonText: 'Kembali ke halaman utama',
-                              onClick: () {
-                                GetIt.I<NavigationServiceMain>().pop();
-                                GetIt.I<NavigationServiceMain>().pop();
-                              },
-                              imageWidth: 120,
-                              imageKey: 'assets/images/scan_failed.png',
-                            );
-
-                            cubit.faceCounter = cubit.faceCounter + 1;
-                          }
-                          // ulang
-                        } else {
-                          // sukses
-                          fCubit.attendingAttendance(
-                            similarityC: state.dist,
-                            attendanceId: fCubit.attendanceId,
-                            dateId: fCubit.dateId,
-                            faceFile: File(cubit.croppedPath),
-                          );
-                          CustomDialog.showAnimationDialog(
-                            context,
-                            barrierDismissible: true,
-                            title: 'Verifikasi berhasil',
-                            body:
-                                'Verifikasi wajah anda berhasil, terimakasih sudah melakukan absensi hari ini',
-                            buttonText: 'Kembali ke halaman utama',
-                            onClick: () {
-                              GetIt.I<NavigationServiceMain>().pop();
-                              GetIt.I<NavigationServiceMain>().pop();
-                              //Change to next shit
-                              // if (cubit.timer == null) {
-                              //   cubit.streamFaceReader();
-                              // } else {
-                              //   if (!cubit.timer!.isActive) {
-                              //     cubit.streamFaceReader();
-                              //   }
-                              // }
-                            },
-                            animationWidth: 260,
-                            animationKey:
-                                'assets/animations/check_animation.json',
-                          );
-                        }
-                      }
-                    },
-                    builder: (context, state) {
-                      final size = Get.size;
-                      final deviceRatio = size.width / size.height;
-                      return CameraWidget(
-                        cameraService: cubit.cameraService,
-                        isCameraInitialized: cubit.isInitialized,
-                        deviceRatio: deviceRatio,
-                      );
-                      // BlocBuilder<CameraCubit, CameraState>(
-                      //   builder: (context, state) {
-                      //     if (cubit.detectedFacePaint == null) {
-                      //       return Container(
-                      //         width: 50,
-                      //         height: 50,
-                      //         color: CustomColor.primary,
-                      //       );
-                      //     } else {
-                      //       return CustomPaint(
-                      //         painter: FacePainter(
-                      //           face: cubit.detectedFacePaint!,
-                      //           imageSize: Size(
-                      //             MediaQuery.of(context).size.width,
-                      //             (MediaQuery.of(context).size.height),
-                      //           ),
-                      //         ),
-                      //       );
-                      //     }
-                      //     return Container();
-                      //   },
-                      // ),
-                    },
-                  ),
+                  _CameraWidget(),
                   Positioned(
                       top: 0,
                       child: Column(

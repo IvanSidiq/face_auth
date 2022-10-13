@@ -207,7 +207,7 @@ class CameraCubit extends Cubit<CameraState> {
     //   minDist = currDistC;
     // }
 
-    emit(CalculateDistance(similarityC, euclC, minkowskiDistC));
+    emit(CalculateDistance(euclC, similarityC, minkowskiDistC));
 
     // for (User u in users) {
     //   currDist = _euclideanDistance(u.modelData, predictedData);

@@ -326,7 +326,8 @@ class _ChooseNisnPage extends HookWidget {
                                     GetIt.I<NavigationServiceMain>()
                                         .pushNamed('/camera', args: {
                                       'userId': state.attendances[index].userId
-                                    });
+                                    })!.then((value) => aCubit.initialLoad(
+                                            search: kCubit.keyController));
                                   }
                                 }).pOnly(top: 4, bottom: 4);
                               }),
@@ -399,7 +400,9 @@ class _ChooseNisnPage extends HookWidget {
                       .then((value) {
                     if (value != null) {
                       GetIt.I<NavigationServiceMain>()
-                          .pushNamed('/camera', args: {'userId': value});
+                          .pushNamed('/camera', args: {'userId': value})!.then(
+                              (value) => aCubit.initialLoad(
+                                  search: kCubit.keyController));
                     }
                   });
                 }),
