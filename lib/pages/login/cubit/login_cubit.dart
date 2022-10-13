@@ -16,9 +16,6 @@ class LoginCubit extends Cubit<LoginState> {
     final response = await _repo.loginUserPass(email, password);
     if (response.statusCode == 201) {
       final user = response.data as User;
-      print('user Role');
-      print(user.role);
-      print(user.name);
       if (user.role != 99) {
         emit(LoginFailed());
         await _repo.logoutFromLogin(password: password);

@@ -84,7 +84,7 @@ class _ChooseNisnPage extends HookWidget {
         child: BlocConsumer<SchoolProfileCubit, SchoolProfileState>(
           listener: (context, state) {
             if (state is GetSchoolProfileSuccess) {
-              aCubit.initialLoad();
+              // aCubit.initialLoad();
             }
           },
           builder: (context, state) {
@@ -171,34 +171,72 @@ class _ChooseNisnPage extends HookWidget {
                     fit: BoxFit.contain,
                   ),
                 ]).p16(),
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(12),
-                  child: VStack([
-                    const Gap(12),
-                    BlocConsumer<AttendanceCubit, AttendanceState>(
-                      listener: (context, state) {
-                        aCubit.attendanceCount =
-                            (state.props[1] as List<Attendance>).length;
-                      },
-                      builder: (context, state) {
-                        return 'Menampilkan ${aCubit.attendanceCount} hasil pencarian NIS'
-                            .text
-                            .center
-                            .textStyle(CustomTextStyle.labelSmall)
-                            .color(CustomColor.onSurfaceVariant)
-                            .size(11)
-                            .semiBold
-                            .make()
-                            .pOnly(left: 8);
-                      },
-                    ),
-                    const Gap(8),
-                    BlocBuilder<AttendanceCubit, AttendanceState>(
-                      builder: (context, state) {
-                        if (state is AttendanceSuccess) {
-                          final List<Attendance> attendances =
-                              state.props[1] as List<Attendance>;
-                          return ListView.builder(
+                BlocConsumer<AttendanceCubit, AttendanceState>(
+                  listener: (context, state) {
+                    aCubit.attendanceCount =
+                        (state.props[1] as List<Attendance>).length;
+                  },
+                  builder: (context, state) {
+                    if (state is AttendanceSuccess) {
+                      final List<Attendance> attendances =
+                          state.props[1] as List<Attendance>;
+                      if (attendances.isEmpty) {
+                        return VStack(
+                          [
+                            Image.asset(
+                              'assets/images/nisn_init.png',
+                              width: 136,
+                              height: 136,
+                              fit: BoxFit.contain,
+                            ).centered(),
+                            const Gap(32),
+                            'Maaf tidak ditemukan data yang anda cari'
+                                .text
+                                .align(TextAlign.center)
+                                .make()
+                                .px(60),
+                            const Gap(13.5),
+                          ],
+                          alignment: MainAxisAlignment.end,
+                        );
+                      }
+                      if (kCubit.keyController == '') {
+                        return VStack(
+                          [
+                            Image.asset(
+                              'assets/images/nisn_init.png',
+                              width: 136,
+                              height: 136,
+                              fit: BoxFit.contain,
+                            ).centered(),
+                            const Gap(32),
+                            'Masukkan NIS atau pindai kode QR Anda untuk melakukan presensi'
+                                .text
+                                .align(TextAlign.center)
+                                .make()
+                                .px(60),
+                            const Gap(13.5),
+                          ],
+                          alignment: MainAxisAlignment.end,
+                        );
+                      }
+                      return ClipRRect(
+                        borderRadius: BorderRadius.circular(12),
+                        child: VStack([
+                          const Gap(12),
+                          aCubit.attendanceCount == 0
+                              ? Container()
+                              : 'Menampilkan ${aCubit.attendanceCount} hasil pencarian NIS'
+                                  .text
+                                  .center
+                                  .textStyle(CustomTextStyle.labelSmall)
+                                  .color(CustomColor.onSurfaceVariant)
+                                  .size(11)
+                                  .semiBold
+                                  .make()
+                                  .pOnly(left: 8),
+                          const Gap(8),
+                          ListView.builder(
                               scrollDirection: Axis.vertical,
                               physics: const NeverScrollableScrollPhysics(),
                               shrinkWrap: true,
@@ -241,7 +279,7 @@ class _ChooseNisnPage extends HookWidget {
                                             .withOpacity(
                                                 isChoosable ? 1 : 0.36))
                                         .make(),
-                                    const Gap(8),
+                                    const Gap(4),
                                     attendances[index]
                                         .nis
                                         .text
@@ -291,26 +329,42 @@ class _ChooseNisnPage extends HookWidget {
                                     });
                                   }
                                 }).pOnly(top: 4, bottom: 4);
-                              });
-                        }
-                        if (state is AttendanceLoading) {
-                          return const CustomLoadingWidget().pOnly(top: 80);
-                        }
-                        return Container();
-                      },
-                    ).w(Get.width)
-                  ]).scrollVertical(
-                    physics: const BouncingScrollPhysics(),
-                    controller: scrollC,
-                  ),
-                )
-                    .box
-                    .withRounded(value: 16)
-                    .p8
-                    .color(CustomColor.surface3)
-                    .make()
-                    .px(8)
-                    .expand(),
+                              }),
+                        ]).scrollVertical(
+                          physics: const BouncingScrollPhysics(),
+                          controller: scrollC,
+                        ),
+                      )
+                          .box
+                          .withRounded(value: 16)
+                          .p8
+                          .color(CustomColor.surface3)
+                          .make()
+                          .px(8);
+                    }
+                    if (state is AttendanceLoading) {
+                      return const CustomLoadingWidget().pOnly(top: 80);
+                    }
+                    return VStack(
+                      [
+                        Image.asset(
+                          'assets/images/nisn_init.png',
+                          width: 136,
+                          height: 136,
+                          fit: BoxFit.contain,
+                        ).centered(),
+                        const Gap(32),
+                        'Masukkan NIS atau pindai kode QR Anda untuk melakukan presensi'
+                            .text
+                            .align(TextAlign.center)
+                            .make()
+                            .px(60),
+                        const Gap(13.5),
+                      ],
+                      alignment: MainAxisAlignment.end,
+                    );
+                  },
+                ).w(Get.width).expand(),
                 BlocListener<SearchCubit, SearchState>(
                   listener: (context, state) {
                     if (state is SearchDelay) {

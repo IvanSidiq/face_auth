@@ -61,7 +61,7 @@ class _KeyboardWidget extends HookWidget {
                 .make()
                 .px24();
           } else {
-            return 'Masukkan NIS'
+            return ''
                 .text
                 .textStyle(CustomTextStyle.headlineMedium)
                 .color(CustomColor.onSurfaceVariant.withOpacity(0.38))

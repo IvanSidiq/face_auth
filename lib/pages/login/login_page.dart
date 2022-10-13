@@ -71,7 +71,13 @@ class _LoginPage extends HookWidget {
                   .textStyle(CustomTextStyle.bodyMedium)
                   .make(),
               const Gap(32),
-              BlocBuilder<LoginCubit, LoginState>(
+              BlocConsumer<LoginCubit, LoginState>(
+                listener: (context, state) {
+                  if (state is LoginSuccess) {
+                    GetIt.I<NavigationServiceMain>()
+                        .pushReplacementNamed('/choose_nisn');
+                  }
+                },
                 builder: (context, state) {
                   if (state is LoginFailed) {
                     return HStack(
@@ -97,10 +103,7 @@ class _LoginPage extends HookWidget {
                       crossAlignment: CrossAxisAlignment.center,
                     ).pOnly(bottom: 32);
                   }
-                  if (state is LoginSuccess) {
-                    GetIt.I<NavigationServiceMain>()
-                        .pushReplacementNamed('/choose_nisn');
-                  }
+
                   return const Gap(8);
                 },
               ),
