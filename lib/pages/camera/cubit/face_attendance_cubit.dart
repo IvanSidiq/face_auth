@@ -13,6 +13,12 @@ class FaceAttendanceCubit extends Cubit<FaceAttendanceState> {
   FaceAttendanceCubit() : super(FaceAttendanceInitial());
 
   final _repo = AttendanceRepository();
+  double similarityCr = 0;
+  String attendanceIdCr = '';
+  String dateIdCr = '';
+  late File faceFileCr;
+  bool isForcedCr = false;
+
   String name = '';
   String nis = '';
   String attendanceId = '';
@@ -50,6 +56,12 @@ class FaceAttendanceCubit extends Cubit<FaceAttendanceState> {
   }) async {
     emit(AttendingAttendanceLoading());
 
+    similarityCr = similarityC;
+    attendanceIdCr = attendanceId;
+    dateIdCr = dateId;
+    faceFileCr = faceFile;
+    isForcedCr = isForced;
+
     final response = await _repo.postAttendanceAttend(
       similarityC: similarityC,
       attendanceId: attendanceId,
@@ -62,5 +74,14 @@ class FaceAttendanceCubit extends Cubit<FaceAttendanceState> {
     } else {
       emit(AttendingAttendanceFailed());
     }
+  }
+
+  Future<void> resendAttendance() async {
+    attendingAttendance(
+        attendanceId: attendanceIdCr,
+        similarityC: similarityCr,
+        dateId: dateIdCr,
+        faceFile: faceFileCr,
+        isForced: isForcedCr);
   }
 }

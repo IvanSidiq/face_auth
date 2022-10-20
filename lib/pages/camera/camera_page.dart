@@ -20,6 +20,7 @@ import '../../utils/customs/custom_text_style.dart';
 import 'cubit/camera_cubit.dart';
 
 part 'camera_widget.dart';
+part 'camera_messages_widget.dart';
 
 class CameraPage extends StatelessWidget {
   const CameraPage({Key? key, required this.userId}) : super(key: key);
@@ -78,24 +79,7 @@ class _CameraPage extends HookWidget {
             child: Material(
               child: Stack(
                 children: [
-                  _CameraWidget(),
-                  // Positioned(
-                  //     top: 0,
-                  //     child: Column(
-                  //       children: [
-                  //         Container(
-                  //           color: CustomColor.surface,
-                  //           width: Get.width,
-                  //           height: 68,
-                  //         ),
-                  //         Gap(Get.width),
-                  //         Container(
-                  //           color: CustomColor.surface,
-                  //           width: Get.width,
-                  //           height: Get.height,
-                  //         ),
-                  //       ],
-                  //     )),
+                  const _CameraWidget(),
                   ColorFiltered(
                     colorFilter: ColorFilter.mode(CustomColor.surface,
                         BlendMode.srcOut), // This one will create the magic
@@ -122,111 +106,23 @@ class _CameraPage extends HookWidget {
                       ],
                     ),
                   ),
+                  const _CameraMessagesWidget(),
                   // Positioned(
-                  //     top: 95,
-                  //     left: 60,
-                  //     child: Container(
-                  //       color: CustomColor.primary,
-                  //       width: 100,
-                  //       height: 105,
-                  //     )),
-                  Positioned(
-                    top: 0,
-                    child: VStack(
-                      [
-                        const Gap(32),
-                        HStack([
-                          const Gap(24),
-                          Icon(
-                            Boxicons.bx_x,
-                            size: 24,
-                            color: CustomColor.onSurface,
-                          )
-                              .p(6)
-                              .box
-                              .border(color: CustomColor.surface, width: 2)
-                              .withRounded(value: 12)
-                              .make()
-                              .onTap(() {
-                            cubit.dispose();
-                            GetIt.I<NavigationServiceMain>().pop();
-                          }),
-                          'Verifikasi Wajah'
-                              .text
-                              .textStyle(CustomTextStyle.titleLarge)
-                              .color(Colors.white)
-                              .makeCentered()
-                              .expand(),
-                          const Icon(
-                            Boxicons.bx_x,
-                            size: 24,
-                            color: Colors.transparent,
-                          )
-                              .box
-                              .p8
-                              .border(color: Colors.transparent, width: 2)
-                              .withRounded(value: 12)
-                              .make(),
-                          const Gap(24),
-                        ]),
-                        const Gap(425),
-                        BlocBuilder<CameraCubit, CameraState>(
-                          builder: (context, state) {
-                            return cubit.message2.text.center
-                                .textStyle(CustomTextStyle.labelLarge)
-                                .color(CustomColor.onSurfaceVariant)
-                                .make()
-                                .pSymmetric(h: 36);
-                          },
-                        ),
-                        const Gap(28),
-                        BlocBuilder<CameraCubit, CameraState>(
-                          builder: (context, state) {
-                            if (cubit.withErrorCircle) {
-                              return HStack([
-                                const Gap(2),
-                                Icon(
-                                  Boxicons.bx_error_circle,
-                                  size: 20,
-                                  color: CustomColor.onErrorContainer,
-                                ),
-                                const Gap(8),
-                                cubit.message.text
-                                    .textStyle(CustomTextStyle.labelLarge)
-                                    .color(CustomColor.onErrorContainer)
-                                    .make(),
-                                const Gap(6)
-                              ])
-                                  .p(6)
-                                  .box
-                                  .color(CustomColor.errorContainer)
-                                  .withRounded(value: 100)
-                                  .make();
-                            } else {
-                              return Container();
-                            }
-                          },
-                        ),
-                      ],
-                      crossAlignment: CrossAxisAlignment.center,
-                    ).w(Get.width),
-                  ),
-                  Positioned(
-                    top: 100,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        VxBox()
-                            .border(
-                                color: CustomColor.onSurface.withOpacity(0.5),
-                                width: 2)
-                            .withRounded(value: Get.width - 64)
-                            .width(Get.width - 64)
-                            .height(Get.width - 64)
-                            .make(),
-                      ],
-                    ).w(Get.width),
-                  ),
+                  //   top: 100,
+                  //   child: Column(
+                  //     crossAxisAlignment: CrossAxisAlignment.center,
+                  //     children: [
+                  //       VxBox()
+                  //           .border(
+                  //               color: CustomColor.onSurface.withOpacity(0.5),
+                  //               width: 2)
+                  //           .withRounded(value: Get.width - 64)
+                  //           .width(Get.width - 64)
+                  //           .height(Get.width - 64)
+                  //           .make(),
+                  //     ],
+                  //   ).w(Get.width),
+                  // ),
                   Positioned(
                     top: 103,
                     child: BlocBuilder<CameraCubit, CameraState>(
@@ -296,7 +192,11 @@ class _CameraPage extends HookWidget {
                               imageWidth: 120,
                               imageKey: 'assets/images/not_found.png');
                         }
+                        if (state is AttendingAttendanceLoading) {
+                          CustomDialog.showLoadingDialog(context);
+                        }
                         if (state is AttendingAttendanceSuccess) {
+                          GetIt.I<NavigationServiceMain>().pop();
                           if (state.isForced) {
                             CustomDialog.showImageDialog(
                               context,
@@ -331,6 +231,28 @@ class _CameraPage extends HookWidget {
                                   'assets/animations/check_animation.json',
                             );
                           }
+                        }
+                        if (state is AttendingAttendanceFailed) {
+                          GetIt.I<NavigationServiceMain>().pop();
+                          CustomDialog.showImageDialog(
+                            context,
+                            barrierDismissible: false,
+                            title: 'Terjadi Kesalahan',
+                            body: 'Mohon ulangi kembali',
+                            buttonText: 'Kirim ulang verifikasi wajah',
+                            onClick: () {
+                              GetIt.I<NavigationServiceMain>().pop();
+                              fCubit.resendAttendance();
+                            },
+                            button2Text: 'Kembali ke halaman utama',
+                            onClick2: () {
+                              GetIt.I<NavigationServiceMain>().pop();
+                              cubit.dispose();
+                              GetIt.I<NavigationServiceMain>().pop();
+                            },
+                            imageWidth: 120,
+                            imageKey: 'assets/images/scan_failed.png',
+                          );
                         }
                       },
                       builder: (context, state) {
