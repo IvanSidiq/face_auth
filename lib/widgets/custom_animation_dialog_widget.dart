@@ -29,42 +29,45 @@ class CustomAnimationDialogWidget extends StatelessWidget {
     return Dialog(
         backgroundColor: Colors.transparent,
         elevation: 0,
-        child: VxBox(
-          child: VStack(
-            [
-              const Gap(8),
-              Lottie.asset(animationKey,
-                  repeat: false, width: animationWidth, fit: BoxFit.contain),
-              const Gap(24),
-              title.text
-                  .align(TextAlign.center)
-                  .textStyle(CustomTextStyle.headlineSmall)
-                  .make(),
-              const Gap(16),
-              body.text
-                  .align(TextAlign.center)
-                  .textStyle(CustomTextStyle.bodyMedium)
-                  .color(CustomColor.onSurfaceVariant)
-                  .make(),
-              const Gap(24),
-              buttonText.text
-                  .color(CustomColor.onPrimary)
-                  .textStyle(CustomTextStyle.labelLarge)
-                  .makeCentered()
-                  .box
-                  .px16
-                  .color(CustomColor.primary)
-                  .height(40)
-                  .width(Get.width)
-                  .withRounded(value: 40)
-                  .make()
-                  .onTap(() {
-                onClick.call();
-              }),
-              const Gap(8),
-            ],
-            crossAlignment: CrossAxisAlignment.center,
-          ).p24(),
-        ).withRounded(value: 28).color(CustomColor.surface).make());
+        child: WillPopScope(
+          onWillPop: () async => false,
+          child: VxBox(
+            child: VStack(
+              [
+                const Gap(8),
+                Lottie.asset(animationKey,
+                    repeat: false, width: animationWidth, fit: BoxFit.contain),
+                const Gap(24),
+                title.text
+                    .align(TextAlign.center)
+                    .textStyle(CustomTextStyle.headlineSmall)
+                    .make(),
+                const Gap(16),
+                body.text
+                    .align(TextAlign.center)
+                    .textStyle(CustomTextStyle.bodyMedium)
+                    .color(CustomColor.onSurfaceVariant)
+                    .make(),
+                const Gap(24),
+                buttonText.text
+                    .color(CustomColor.onPrimary)
+                    .textStyle(CustomTextStyle.labelLarge)
+                    .makeCentered()
+                    .box
+                    .px16
+                    .color(CustomColor.primary)
+                    .height(40)
+                    .width(Get.width)
+                    .withRounded(value: 40)
+                    .make()
+                    .onTap(() {
+                  onClick.call();
+                }),
+                const Gap(8),
+              ],
+              crossAlignment: CrossAxisAlignment.center,
+            ).p24(),
+          ).withRounded(value: 28).color(CustomColor.surface).make(),
+        ));
   }
 }

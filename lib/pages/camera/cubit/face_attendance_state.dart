@@ -25,7 +25,11 @@ class GetAttendanceFaceDataLoading extends FaceAttendanceState {}
 
 class GetAttendanceFaceDataFailed extends FaceAttendanceState {}
 
-class AttendingAttendanceSuccess extends FaceAttendanceState {}
+class AttendingAttendanceSuccess extends FaceAttendanceState {
+  final bool isForced;
+
+  AttendingAttendanceSuccess(this.isForced);
+}
 
 class AttendingAttendanceLoading extends FaceAttendanceState {}
 

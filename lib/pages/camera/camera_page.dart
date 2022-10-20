@@ -79,25 +79,25 @@ class _CameraPage extends HookWidget {
               child: Stack(
                 children: [
                   _CameraWidget(),
-                  Positioned(
-                      top: 0,
-                      child: Column(
-                        children: [
-                          Container(
-                            color: CustomColor.surface,
-                            width: Get.width,
-                            height: 68,
-                          ),
-                          Gap(Get.width),
-                          Container(
-                            color: CustomColor.surface,
-                            width: Get.width,
-                            height: Get.height,
-                          ),
-                        ],
-                      )),
+                  // Positioned(
+                  //     top: 0,
+                  //     child: Column(
+                  //       children: [
+                  //         Container(
+                  //           color: CustomColor.surface,
+                  //           width: Get.width,
+                  //           height: 68,
+                  //         ),
+                  //         Gap(Get.width),
+                  //         Container(
+                  //           color: CustomColor.surface,
+                  //           width: Get.width,
+                  //           height: Get.height,
+                  //         ),
+                  //       ],
+                  //     )),
                   ColorFiltered(
-                    colorFilter: ColorFilter.mode(Colors.black.withOpacity(0.6),
+                    colorFilter: ColorFilter.mode(CustomColor.surface,
                         BlendMode.srcOut), // This one will create the magic
                     child: Stack(
                       children: [
@@ -144,9 +144,13 @@ class _CameraPage extends HookWidget {
                           )
                               .p(6)
                               .box
-                              .border(color: CustomColor.onSurface, width: 2)
+                              .border(color: CustomColor.surface, width: 2)
                               .withRounded(value: 12)
-                              .make(),
+                              .make()
+                              .onTap(() {
+                            cubit.dispose();
+                            GetIt.I<NavigationServiceMain>().pop();
+                          }),
                           'Verifikasi Wajah'
                               .text
                               .textStyle(CustomTextStyle.titleLarge)
@@ -165,35 +169,42 @@ class _CameraPage extends HookWidget {
                               .make(),
                           const Gap(24),
                         ]),
-                        const Gap(430),
-                        BlocBuilder<CameraCubit, CameraState>(
-                          builder: (context, state) {
-                            return HStack([
-                              cubit.withErrorCircle
-                                  ? Icon(
-                                      Boxicons.bx_error_circle,
-                                      size: 20,
-                                      color: CustomColor.onSurface,
-                                    )
-                                  : Container(),
-                              cubit.withErrorCircle
-                                  ? const Gap(8)
-                                  : Container(),
-                              cubit.message.text
-                                  .textStyle(CustomTextStyle.labelLarge)
-                                  .color(CustomColor.onSurface)
-                                  .make()
-                            ]);
-                          },
-                        ),
-                        const Gap(112),
+                        const Gap(425),
                         BlocBuilder<CameraCubit, CameraState>(
                           builder: (context, state) {
                             return cubit.message2.text.center
                                 .textStyle(CustomTextStyle.labelLarge)
-                                .white
+                                .color(CustomColor.onSurfaceVariant)
                                 .make()
-                                .pSymmetric(h: 75);
+                                .pSymmetric(h: 36);
+                          },
+                        ),
+                        const Gap(28),
+                        BlocBuilder<CameraCubit, CameraState>(
+                          builder: (context, state) {
+                            if (cubit.withErrorCircle) {
+                              return HStack([
+                                const Gap(2),
+                                Icon(
+                                  Boxicons.bx_error_circle,
+                                  size: 20,
+                                  color: CustomColor.onErrorContainer,
+                                ),
+                                const Gap(8),
+                                cubit.message.text
+                                    .textStyle(CustomTextStyle.labelLarge)
+                                    .color(CustomColor.onErrorContainer)
+                                    .make(),
+                                const Gap(6)
+                              ])
+                                  .p(6)
+                                  .box
+                                  .color(CustomColor.errorContainer)
+                                  .withRounded(value: 100)
+                                  .make();
+                            } else {
+                              return Container();
+                            }
                           },
                         ),
                       ],
@@ -227,7 +238,7 @@ class _CameraPage extends HookWidget {
                               CircularProgressIndicator(
                                 strokeWidth: 6,
                                 value: cubit.captValue,
-                                color: CustomColor.onSurface,
+                                color: CustomColor.primary,
                               )
                                   .box
                                   .width(Get.width - 70)
@@ -241,7 +252,7 @@ class _CameraPage extends HookWidget {
                     ),
                   ),
                   Positioned(
-                    bottom: 0,
+                    bottom: 16,
                     child:
                         BlocConsumer<FaceAttendanceCubit, FaceAttendanceState>(
                       listener: (context, state) {
@@ -285,6 +296,42 @@ class _CameraPage extends HookWidget {
                               imageWidth: 120,
                               imageKey: 'assets/images/not_found.png');
                         }
+                        if (state is AttendingAttendanceSuccess) {
+                          if (state.isForced) {
+                            CustomDialog.showImageDialog(
+                              context,
+                              barrierDismissible: false,
+                              title: 'Verifikasi gagal',
+                              body:
+                                  'Anda telah 3 kali gagal melakukan verifikasi wajah. Gambar wajah terakhir akan dikirimkan sebagai bukti presensi.',
+                              buttonText: 'Kembali ke halaman utama',
+                              onClick: () {
+                                GetIt.I<NavigationServiceMain>().pop();
+                                cubit.dispose();
+                                GetIt.I<NavigationServiceMain>().pop();
+                              },
+                              imageWidth: 120,
+                              imageKey: 'assets/images/scan_failed.png',
+                            );
+                          } else {
+                            CustomDialog.showAnimationDialog(
+                              context,
+                              barrierDismissible: false,
+                              title: 'Verifikasi berhasil',
+                              body:
+                                  'Verifikasi wajah anda berhasil, terimakasih sudah melakukan absensi hari ini',
+                              buttonText: 'Kembali ke halaman utama',
+                              onClick: () {
+                                GetIt.I<NavigationServiceMain>().pop();
+                                cubit.dispose();
+                                GetIt.I<NavigationServiceMain>().pop();
+                              },
+                              animationWidth: 260,
+                              animationKey:
+                                  'assets/animations/check_animation.json',
+                            );
+                          }
+                        }
                       },
                       builder: (context, state) {
                         if (state is GetAttendanceDataLoading) {
@@ -317,9 +364,13 @@ class _CameraPage extends HookWidget {
                         )
                             .p24()
                             .box
-                            .color(CustomColor.surface)
-                            .topRounded(value: 16)
+                            .color(CustomColor.surface1)
+                            .border(
+                                color: CustomColor.onSurfaceVariant
+                                    .withOpacity(0.12))
+                            .withRounded(value: 16)
                             .make()
+                            .p16()
                             .w(Get.width);
                       },
                     ),

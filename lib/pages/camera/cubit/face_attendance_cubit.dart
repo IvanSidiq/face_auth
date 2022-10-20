@@ -46,6 +46,7 @@ class FaceAttendanceCubit extends Cubit<FaceAttendanceState> {
     required String attendanceId,
     required String dateId,
     required File faceFile,
+    required bool isForced,
   }) async {
     emit(AttendingAttendanceLoading());
 
@@ -57,7 +58,7 @@ class FaceAttendanceCubit extends Cubit<FaceAttendanceState> {
     );
 
     if (response.statusCode == 200) {
-      emit(AttendingAttendanceSuccess());
+      emit(AttendingAttendanceSuccess(isForced));
     } else {
       emit(AttendingAttendanceFailed());
     }

@@ -94,24 +94,8 @@ class _CameraWidget extends StatelessWidget {
                 attendanceId: fCubit.attendanceId,
                 dateId: fCubit.dateId,
                 faceFile: File(cubit.croppedPath),
+                isForced: true,
               );
-              CustomDialog.showImageDialog(
-                context,
-                barrierDismissible: false,
-                title: 'Verifikasi gagal',
-                body:
-                    'Anda telah 3 kali gagal melakukan verifikasi wajah. Gambar wajah terakhir akan dikirimkan sebagai bukti presensi.',
-                buttonText: 'Kembali ke halaman utama',
-                onClick: () {
-                  GetIt.I<NavigationServiceMain>().pop();
-                  cubit.dispose();
-                  GetIt.I<NavigationServiceMain>().pop();
-                },
-                imageWidth: 120,
-                imageKey: 'assets/images/scan_failed.png',
-              );
-
-              cubit.faceCounter = cubit.faceCounter + 1;
             }
           } else {
             // sukses
@@ -120,21 +104,7 @@ class _CameraWidget extends StatelessWidget {
               attendanceId: fCubit.attendanceId,
               dateId: fCubit.dateId,
               faceFile: File(cubit.croppedPath),
-            );
-            CustomDialog.showAnimationDialog(
-              context,
-              barrierDismissible: false,
-              title: 'Verifikasi berhasil',
-              body:
-                  'Verifikasi wajah anda berhasil, terimakasih sudah melakukan absensi hari ini',
-              buttonText: 'Kembali ke halaman utama',
-              onClick: () {
-                GetIt.I<NavigationServiceMain>().pop();
-                cubit.dispose();
-                GetIt.I<NavigationServiceMain>().pop();
-              },
-              animationWidth: 260,
-              animationKey: 'assets/animations/check_animation.json',
+              isForced: false,
             );
           }
         }
